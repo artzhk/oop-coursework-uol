@@ -31,7 +31,7 @@ public:
     cout << "\n\nYou selected: " << *current_choice << endl;
     switch (*current_choice) {
     case 1:
-      std::cout << "Help: This is a simple trading application. Select options "
+      cout << "Help: This is a simple trading application. Select options "
                    "from the menu to interact.\n";
       break;
     case 2:
@@ -64,12 +64,10 @@ public:
   Application() : menu(new Menu()) {}
 
   void run() {
-    int x{1};
-    while (x) {
+    while (true) {
       menu->render();
       menu->request_choice();
       menu->handle_choice();
-      x--;
     }
   }
 };
