@@ -1,2 +1,5 @@
 -std=c++11
+ui/menu.h
+utils/file_reader.h
+utils/file_reader.cpp
 main.cpp
