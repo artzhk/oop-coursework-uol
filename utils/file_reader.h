@@ -5,7 +5,6 @@ using namespace std;
 
 class FileReader {
 private:
-
 public:
-  vector<string> read_file(string path);
+  vector<string *> read_file(string path);
 };
