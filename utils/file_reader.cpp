@@ -6,16 +6,14 @@
 
 using namespace std;
 
-vector<string *> FileReader::read_file(string path) {
+vector<string> FileReader::read_file(string path) {
   ifstream csv_file{path};
-  vector<string *> lines;
-  string *line = nullptr;
+  vector<string> lines;
+  string line;
 
   if (csv_file.is_open()) {
     while (true) {
-      line = new string;
-      if (!getline(csv_file, *line)) {
-        delete line;
+      if (!getline(csv_file, line)) {
         break;
       }
       lines.push_back(line);
@@ -50,10 +48,10 @@ vector<string> *FileReader::tokenise(string *csv_line, char separator) {
 
 vector<OrderBookEntry> *FileReader::read_to_order_book_entry(string path) {
   vector<OrderBookEntry> *entries = new vector<OrderBookEntry>();
-  vector<string *> rows = read_file(path);
+  vector<string> rows = read_file(path);
 
-  for (string *row : rows) {
-    vector<string> *tokens = tokenise(row, ',');
+  for (string row : rows) {
+    vector<string> *tokens = tokenise(&row, ',');
     OrderBookEntry entry{(*tokens)[0], (*tokens)[1],
                          OrderBookMapper::map_string(&(*tokens)[2]),
                          stod((*tokens)[3]), stod((*tokens)[4])};
