@@ -15,6 +15,8 @@ public:
   OrderBookType type;
   double amount;
   double price;
+
+  vector<OrderBookEntry> *read_csv_to_dto(string path) const;
 };
 
 class OrderBookProcessor {
