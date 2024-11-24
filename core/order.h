@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 
-enum class OrderBookType { bid, ask };
+enum class OrderBookType { bid, ask, uknown };
 
 class OrderBookEntry {
 private:
@@ -15,8 +15,12 @@ public:
   OrderBookType type;
   double amount;
   double price;
+};
 
-  vector<OrderBookEntry> *read_csv_to_dto(string path) const;
+class OrderBookMapper {
+    private: 
+    public:
+        static OrderBookType map_string(string *value);
 };
 
 class OrderBookProcessor {

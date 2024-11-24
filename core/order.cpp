@@ -1,4 +1,5 @@
-#include "./core/order.h"
+#include "./order.h"
+#include <cassert>
 
 using namespace std;
 
@@ -72,4 +73,11 @@ OrderBookProcessor::computeLowPrice(vector<OrderBookEntry> &entries) const {
   }
 
   return lowest;
+}
+
+
+OrderBookType OrderBookMapper::map_string(string *value) {
+    if (*value == "ask") return OrderBookType::ask;
+    if (*value == "bid") return OrderBookType::bid;
+    return OrderBookType::uknown;
 }
