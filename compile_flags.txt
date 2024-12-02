@@ -1,6 +1,4 @@
 -std=c++11
 main.cpp
-utils/file_reader.h
 utils/file_reader.cpp
-core/order.h
 core/order.cpp
