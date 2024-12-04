@@ -1,8 +1,6 @@
 #include "./file_reader.h"
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
 
 using namespace std;
 
@@ -46,18 +44,3 @@ vector<string> *FileReader::tokenise(string *csv_line, char separator) {
   return tokens;
 }
 
-vector<OrderBookEntry> *FileReader::read_to_order_book_entry(string path) {
-  vector<OrderBookEntry> *entries = new vector<OrderBookEntry>();
-  vector<string> rows = read_file(path);
-
-  for (string row : rows) {
-    vector<string> *tokens = tokenise(&row, ',');
-    OrderBookEntry entry{(*tokens)[0], (*tokens)[1],
-                         OrderBookMapper::map_string(&(*tokens)[2]),
-                         stod((*tokens)[3]), stod((*tokens)[4])};
-
-    entries->push_back(entry);
-  }
-
-  return entries;
-}

@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 #include <vector>
 using namespace std;
@@ -18,16 +19,27 @@ public:
 };
 
 class OrderBookMapper {
-    private: 
-    public:
-        static OrderBookType map_string(string *value);
+private:
+public:
+  static OrderBookType map_string(string *value);
 };
 
-class OrderBookProcessor {
+class OrderBook {
+private:
+  unique_ptr<vector<OrderBookEntry>> entries;
+  vector<OrderBookEntry> *read_file_to_order_book(string &path);
+
+public:
+  OrderBook(string &_file_name);
+  vector<string> *get_known_products();
+  vector<OrderBookEntry> *get_orders(OrderBookType &type, string &product,
+                                     string &timestamp);
+};
+
+class OrderBookEntryProcessor {
 public:
   double computeAveragePrice(vector<OrderBookEntry> &entries) const;
   double computeLowPrice(vector<OrderBookEntry> &entries) const;
   double computeHighPrice(vector<OrderBookEntry> &entries) const;
   double computePriceSpread(vector<OrderBookEntry> &entries) const;
 };
-

@@ -1,4 +1,5 @@
 #include <memory>
+#include "../core/order.h"
 
 using namespace std;
 
@@ -13,15 +14,6 @@ public:
 
   int get_choice() const;
   void request_choice();
-  void render() const; 
-  void handle_choice() const;
+  void render() const;
+  void handle_choice(OrderBook* order_book) const;
 };
-
-class Application {
-private:
-  unique_ptr<Menu> menu;
-public:
-  Application();
-  void run();
-};
-

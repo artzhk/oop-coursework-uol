@@ -24,7 +24,7 @@ void Menu::render() const {
   cout << "Enter your choice (1-6): ";
 }
 
-void Menu::handle_choice() const {
+void Menu::handle_choice(OrderBook *order_book) const {
   cout << "\n\nYou selected: " << *current_choice << endl;
   switch (*current_choice) {
   case 1:
@@ -49,15 +49,5 @@ void Menu::handle_choice() const {
   default:
     cout << "Invalid choice! Please select a number between 1 and 6.\n";
     break;
-  }
-}
-
-Application::Application() : menu(new Menu()) {}
-
-void Application::run() {
-  while (true) {
-    menu->render();
-    menu->request_choice();
-    menu->handle_choice();
   }
 }

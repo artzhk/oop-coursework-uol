@@ -1,4 +1,3 @@
-#include "../core/order.h"
 #include <string>
 #include <vector>
 
@@ -9,5 +8,4 @@ private:
 public:
   static vector<string> read_file(string path);
   static vector<string> *tokenise(string *csvLine, char separator);
-  static vector<OrderBookEntry> *read_to_order_book_entry(string path);
 };

@@ -1,4 +1,5 @@
 #include "./order.h"
+#include "../utils/file_reader.h"
 #include <cassert>
 
 using namespace std;
@@ -9,7 +10,7 @@ OrderBookEntry::OrderBookEntry(string _timestamp, string _product,
     : timestamp(_timestamp), product(_product), type(_type), amount(_amount),
       price(_price) {}
 
-double OrderBookProcessor::computeAveragePrice(
+double OrderBookEntryProcessor::computeAveragePrice(
     std::vector<OrderBookEntry> &entries) const {
   double sum = 0;
   for (OrderBookEntry &e : entries) {
@@ -21,8 +22,8 @@ double OrderBookProcessor::computeAveragePrice(
   return sum;
 }
 
-double
-OrderBookProcessor::computePriceSpread(vector<OrderBookEntry> &entries) const {
+double OrderBookEntryProcessor::computePriceSpread(
+    vector<OrderBookEntry> &entries) const {
   uint size = entries.size();
   assert(size > 0);
 
@@ -30,12 +31,12 @@ OrderBookProcessor::computePriceSpread(vector<OrderBookEntry> &entries) const {
     return entries[0].price;
   }
 
-  return OrderBookProcessor::computeHighPrice(entries) -
-         OrderBookProcessor::computeLowPrice(entries);
+  return OrderBookEntryProcessor::computeHighPrice(entries) -
+         OrderBookEntryProcessor::computeLowPrice(entries);
 }
 
-double
-OrderBookProcessor::computeHighPrice(vector<OrderBookEntry> &entries) const {
+double OrderBookEntryProcessor::computeHighPrice(
+    vector<OrderBookEntry> &entries) const {
   uint size = entries.size();
   assert(size > 0);
 
@@ -54,8 +55,8 @@ OrderBookProcessor::computeHighPrice(vector<OrderBookEntry> &entries) const {
   return highest;
 }
 
-double
-OrderBookProcessor::computeLowPrice(vector<OrderBookEntry> &entries) const {
+double OrderBookEntryProcessor::computeLowPrice(
+    vector<OrderBookEntry> &entries) const {
   uint size = entries.size();
 
   assert(size > 0);
@@ -75,9 +76,34 @@ OrderBookProcessor::computeLowPrice(vector<OrderBookEntry> &entries) const {
   return lowest;
 }
 
-
 OrderBookType OrderBookMapper::map_string(string *value) {
-    if (*value == "ask") return OrderBookType::ask;
-    if (*value == "bid") return OrderBookType::bid;
-    return OrderBookType::uknown;
+  if (*value == "ask")
+    return OrderBookType::ask;
+  if (*value == "bid")
+    return OrderBookType::bid;
+  return OrderBookType::uknown;
+}
+
+OrderBook::OrderBook(string &file_name)
+    : entries(read_file_to_order_book(file_name)) {}
+
+vector<string> *OrderBook::get_known_products() {}
+vector<OrderBookEntry> *OrderBook::get_orders(OrderBookType &type,
+                                              string &product,
+                                              string &timestamp) {}
+
+vector<OrderBookEntry> *OrderBook::read_file_to_order_book(string &path) {
+  vector<OrderBookEntry> *entries = new vector<OrderBookEntry>();
+  vector<string> rows = FileReader::read_file(path);
+
+  for (string row : rows) {
+    vector<string> *tokens = FileReader::tokenise(&row, ',');
+    OrderBookEntry entry{(*tokens)[0], (*tokens)[1],
+                         OrderBookMapper::map_string(&(*tokens)[2]),
+                         stod((*tokens)[3]), stod((*tokens)[4])};
+
+    entries->push_back(entry);
+  }
+
+  return entries;
 }
