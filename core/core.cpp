@@ -1,9 +1,16 @@
 #include "./core.h"
+#include <iostream>
 
 Core::Core(Menu *_menu, OrderBook *_order_book)
     : menu(_menu), order_book(_order_book) {}
 
 void Core::print_market_stats() {
+    for (string const &p : *order_book->get_known_products()) {
+        cout << "Product: " << p << endl;
+    }
+}
+
+void Core::run_menu() {
   while (true) {
     menu->render();
     menu->request_choice();
@@ -14,3 +21,9 @@ void Core::print_market_stats() {
 Application::Application(Core *_core) : core(_core) {}
 
 void Application::run() { core->print_market_stats(); }
+
+int main() {
+    Core core{new Menu(), new OrderBook("../datasets/dataset.csv")};
+
+    core.print_market_stats();
+}

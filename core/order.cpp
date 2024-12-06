@@ -1,6 +1,10 @@
 #include "./order.h"
 #include "../utils/file_reader.h"
 #include <cassert>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <string>
 
 using namespace std;
 
@@ -84,15 +88,35 @@ OrderBookType OrderBookMapper::map_string(string *value) {
   return OrderBookType::uknown;
 }
 
-OrderBook::OrderBook(string &file_name)
+OrderBook::OrderBook(const string &file_name)
     : entries(read_file_to_order_book(file_name)) {}
 
-vector<string> *OrderBook::get_known_products() {}
-vector<OrderBookEntry> *OrderBook::get_orders(OrderBookType &type,
-                                              string &product,
-                                              string &timestamp) {}
+vector<string> *OrderBook::get_known_products() {
+    vector<string> *products = new vector<string>();
+    map<string, bool> unique_products_map;
 
-vector<OrderBookEntry> *OrderBook::read_file_to_order_book(string &path) {
+    for (OrderBookEntry const& e : *(entries.release())) {
+        unique_products_map[e.product] = true;
+    }
+
+    for (pair<string, bool> const& e : unique_products_map) {
+        products->push_back(e.first);
+    }
+
+    return products;
+}
+
+vector<OrderBookEntry> *OrderBook::get_orders(const OrderBookType &type,
+                                              const string &product,
+                                              const string &timestamp) { 
+    vector<OrderBookEntry> *result = new vector<OrderBookEntry>();
+
+    return result;
+}
+
+
+
+vector<OrderBookEntry> *OrderBook::read_file_to_order_book(const string &path) {
   vector<OrderBookEntry> *entries = new vector<OrderBookEntry>();
   vector<string> rows = FileReader::read_file(path);
 
@@ -101,9 +125,18 @@ vector<OrderBookEntry> *OrderBook::read_file_to_order_book(string &path) {
     OrderBookEntry entry{(*tokens)[0], (*tokens)[1],
                          OrderBookMapper::map_string(&(*tokens)[2]),
                          stod((*tokens)[3]), stod((*tokens)[4])};
-
+    delete tokens; 
     entries->push_back(entry);
   }
 
   return entries;
 }
+
+// int main() {
+//     OrderBook book("../datasets/dataset.csv");
+//     for (string& e : *(book.get_known_products())) { 
+//         cout << e << endl;
+//     }
+
+//     return -1;
+// }

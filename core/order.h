@@ -27,13 +27,13 @@ public:
 class OrderBook {
 private:
   unique_ptr<vector<OrderBookEntry>> entries;
-  vector<OrderBookEntry> *read_file_to_order_book(string &path);
+  vector<OrderBookEntry> *read_file_to_order_book(const string &path);
 
 public:
-  OrderBook(string &_file_name);
+  OrderBook(const string &_file_name);
   vector<string> *get_known_products();
-  vector<OrderBookEntry> *get_orders(OrderBookType &type, string &product,
-                                     string &timestamp);
+  vector<OrderBookEntry> *get_orders(const OrderBookType &type,const string &product,
+                                     const string &timestamp);
 };
 
 class OrderBookEntryProcessor {
