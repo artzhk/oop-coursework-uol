@@ -3,7 +3,6 @@
 #include <cassert>
 #include <iostream>
 #include <map>
-#include <ostream>
 #include <string>
 
 using namespace std;
@@ -92,29 +91,34 @@ OrderBook::OrderBook(const string &file_name)
     : entries(read_file_to_order_book(file_name)) {}
 
 vector<string> *OrderBook::get_known_products() {
-    vector<string> *products = new vector<string>();
-    map<string, bool> unique_products_map;
+  vector<string> *products = new vector<string>();
+  map<string, bool> *unique_products_map = new map<string, bool>();
 
-    for (OrderBookEntry const& e : *(entries.release())) {
-        unique_products_map[e.product] = true;
-    }
+  for (OrderBookEntry const &e : *(entries.release())) {
+    (*unique_products_map)[e.product] = true;
+  }
 
-    for (pair<string, bool> const& e : unique_products_map) {
-        products->push_back(e.first);
-    }
+  for (pair<string, bool> const &e : *unique_products_map) {
+    products->push_back(e.first);
+  }
 
-    return products;
+  delete unique_products_map;
+  return products;
 }
 
 vector<OrderBookEntry> *OrderBook::get_orders(const OrderBookType &type,
                                               const string &product,
-                                              const string &timestamp) { 
-    vector<OrderBookEntry> *result = new vector<OrderBookEntry>();
+                                              const string &timestamp) {
+  vector<OrderBookEntry> *result = new vector<OrderBookEntry>();
 
-    return result;
+  for (OrderBookEntry const &e : *entries.release()) {
+    if (e.type == type && e.product == product) {
+      result->push_back(e);
+    }
+  }
+
+  return result;
 }
-
-
 
 vector<OrderBookEntry> *OrderBook::read_file_to_order_book(const string &path) {
   vector<OrderBookEntry> *entries = new vector<OrderBookEntry>();
@@ -125,18 +129,19 @@ vector<OrderBookEntry> *OrderBook::read_file_to_order_book(const string &path) {
     OrderBookEntry entry{(*tokens)[0], (*tokens)[1],
                          OrderBookMapper::map_string(&(*tokens)[2]),
                          stod((*tokens)[3]), stod((*tokens)[4])};
-    delete tokens; 
+    delete tokens;
     entries->push_back(entry);
   }
 
   return entries;
 }
 
-// int main() {
-//     OrderBook book("../datasets/dataset.csv");
-//     for (string& e : *(book.get_known_products())) { 
-//         cout << e << endl;
-//     }
+int main() {
+  OrderBook book("../datasets/dataset.csv");
+  for (const OrderBookEntry &e : *book.get_orders(OrderBookType::bid, "ETH/BTC", "uoae")) {
+    cout << e.product << endl;
+    cout << e.price << endl;
+  }
 
-//     return -1;
-// }
+  return -1;
+}
