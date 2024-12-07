@@ -2,3 +2,4 @@
 main.cpp
 utils/file_reader.cpp
 core/order.cpp
+core/core.cpp

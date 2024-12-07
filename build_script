@@ -1,0 +1,1 @@
+g++ -o build/build.out $(cat /Users/artem/repos/uni/oop/OOP-CourseWork-UOL/compile_flags.txt)

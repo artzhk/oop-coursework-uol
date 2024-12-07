@@ -1,7 +1,6 @@
 #include "./order.h"
 #include "../utils/file_reader.h"
 #include <cassert>
-#include <iostream>
 #include <map>
 #include <string>
 
@@ -13,8 +12,8 @@ OrderBookEntry::OrderBookEntry(string _timestamp, string _product,
     : timestamp(_timestamp), product(_product), type(_type), amount(_amount),
       price(_price) {}
 
-double OrderBookEntryProcessor::computeAveragePrice(
-    std::vector<OrderBookEntry> &entries) const {
+double OrderBookEntryProcessor::compute_average_price(
+    std::vector<OrderBookEntry> &entries) {
   double sum = 0;
   for (OrderBookEntry &e : entries) {
     sum += e.price;
@@ -25,8 +24,8 @@ double OrderBookEntryProcessor::computeAveragePrice(
   return sum;
 }
 
-double OrderBookEntryProcessor::computePriceSpread(
-    vector<OrderBookEntry> &entries) const {
+double
+OrderBookEntryProcessor::compute_price_spread(vector<OrderBookEntry> &entries) {
   uint size = entries.size();
   assert(size > 0);
 
@@ -34,12 +33,12 @@ double OrderBookEntryProcessor::computePriceSpread(
     return entries[0].price;
   }
 
-  return OrderBookEntryProcessor::computeHighPrice(entries) -
-         OrderBookEntryProcessor::computeLowPrice(entries);
+  return OrderBookEntryProcessor::compute_high_price(entries) -
+         OrderBookEntryProcessor::compute_low_price(entries);
 }
 
-double OrderBookEntryProcessor::computeHighPrice(
-    vector<OrderBookEntry> &entries) const {
+double
+OrderBookEntryProcessor::compute_high_price(vector<OrderBookEntry> &entries) {
   uint size = entries.size();
   assert(size > 0);
 
@@ -58,8 +57,8 @@ double OrderBookEntryProcessor::computeHighPrice(
   return highest;
 }
 
-double OrderBookEntryProcessor::computeLowPrice(
-    vector<OrderBookEntry> &entries) const {
+double
+OrderBookEntryProcessor::compute_low_price(vector<OrderBookEntry> &entries) {
   uint size = entries.size();
 
   assert(size > 0);
@@ -94,11 +93,11 @@ vector<string> *OrderBook::get_known_products() {
   vector<string> *products = new vector<string>();
   map<string, bool> *unique_products_map = new map<string, bool>();
 
-  for (OrderBookEntry const &e : *(entries.release())) {
+  for (const OrderBookEntry &e : *(entries.release())) {
     (*unique_products_map)[e.product] = true;
   }
 
-  for (pair<string, bool> const &e : *unique_products_map) {
+  for (const pair<string, bool> &e : *unique_products_map) {
     products->push_back(e.first);
   }
 
@@ -136,12 +135,13 @@ vector<OrderBookEntry> *OrderBook::read_file_to_order_book(const string &path) {
   return entries;
 }
 
-int main() {
-  OrderBook book("../datasets/dataset.csv");
-  for (const OrderBookEntry &e : *book.get_orders(OrderBookType::bid, "ETH/BTC", "uoae")) {
-    cout << e.product << endl;
-    cout << e.price << endl;
-  }
+// int main() {
+//   OrderBook book("../datasets/dataset.csv");
+//   for (const OrderBookEntry &e : *book.get_orders(OrderBookType::bid,
+//   "ETH/BTC", "uoae")) {
+//     cout << e.product << endl;
+//     cout << e.price << endl;
+//   }
 
-  return -1;
-}
+//   return -1;
+// }

@@ -38,8 +38,8 @@ public:
 
 class OrderBookEntryProcessor {
 public:
-  double computeAveragePrice(vector<OrderBookEntry> &entries) const;
-  double computeLowPrice(vector<OrderBookEntry> &entries) const;
-  double computeHighPrice(vector<OrderBookEntry> &entries) const;
-  double computePriceSpread(vector<OrderBookEntry> &entries) const;
+  static double compute_average_price(vector<OrderBookEntry> &entries);
+  static double compute_low_price(vector<OrderBookEntry> &entries);
+  static double compute_high_price(vector<OrderBookEntry> &entries);
+  static double compute_price_spread(vector<OrderBookEntry> &entries);
 };

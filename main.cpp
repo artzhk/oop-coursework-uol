@@ -1,13 +1,11 @@
-#include <cassert>
-#include <cstdlib>
-#include <iostream>
-
-#include "./utils/file_reader.h"
-
+#include "core/core.h"
 using namespace std;
 
 int main() {
+  Core core{new Menu(), new OrderBook("../datasets/dataset.csv")};
+  Application app{&core};
 
-
-  return -1;
+  while (1) {
+    app.run();
+  }
 }
