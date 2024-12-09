@@ -93,11 +93,11 @@ vector<string> *OrderBook::get_known_products() {
   vector<string> *products = new vector<string>();
   map<string, bool> *unique_products_map = new map<string, bool>();
 
-  for (const OrderBookEntry &e : *(entries.release())) {
+  for (OrderBookEntry &e : *entries.release()) {
     (*unique_products_map)[e.product] = true;
   }
 
-  for (const pair<string, bool> &e : *unique_products_map) {
+  for (const auto &e : *unique_products_map) {
     products->push_back(e.first);
   }
 

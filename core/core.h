@@ -8,7 +8,6 @@ private:
 public:
   Core(Menu *_menu, OrderBook *_order_book);
   void init();
-  void print_market_stats();
   void run_menu();
   void enter_bid();
   void enter_offer();

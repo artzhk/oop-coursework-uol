@@ -6,6 +6,7 @@ using namespace std;
 class Menu {
 private:
   unique_ptr<int> current_choice;
+  void print_market_stats(OrderBook *order_book) const;
 
 public:
   Menu();
