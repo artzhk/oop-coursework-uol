@@ -1,5 +1,7 @@
+./main.cpp
+./utils/file_reader.cpp
+./core/order.cpp
+-g
+./ui/menu.cpp
+./core/core.cpp
 -std=c++11
-main.cpp
-utils/file_reader.cpp
-core/order.cpp
-core/core.cpp

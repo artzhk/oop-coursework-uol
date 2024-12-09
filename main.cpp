@@ -2,7 +2,9 @@
 using namespace std;
 
 int main() {
-  Core core{new Menu(), new OrderBook("../datasets/dataset.csv")};
+  Menu *menu = new Menu();
+  OrderBook *order_book = new OrderBook("../datasets/dataset.csv");
+  Core core{menu, order_book};
   Application app{&core};
 
   while (1) {
