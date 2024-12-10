@@ -1,7 +1,9 @@
 #include "./order.h"
 #include "../utils/file_reader.h"
 #include <cassert>
+#include <iostream>
 #include <map>
+#include <ostream>
 #include <string>
 
 using namespace std;
@@ -42,7 +44,7 @@ OrderBookEntryProcessor::compute_high_price(vector<OrderBookEntry> &entries) {
   uint size = entries.size();
   assert(size > 0);
 
-  double highest = entries[size - 1].price;
+  double highest = entries[0].price;
 
   if (size == 1) {
     return highest;
@@ -89,30 +91,30 @@ OrderBookType OrderBookMapper::map_string(string *value) {
 OrderBook::OrderBook(const string &file_name)
     : entries(read_file_to_order_book(file_name)) {}
 
-vector<string> *OrderBook::get_known_products() {
-  vector<string> *products = new vector<string>();
+vector<string> OrderBook::get_known_products() {
+  vector<string> products;
   map<string, bool> *unique_products_map = new map<string, bool>();
 
-  for (OrderBookEntry &e : *entries.release()) {
+  for (OrderBookEntry &e : *entries) {
     (*unique_products_map)[e.product] = true;
   }
 
   for (const auto &e : *unique_products_map) {
-    products->push_back(e.first);
+    products.push_back(e.first);
   }
 
   delete unique_products_map;
   return products;
 }
 
-vector<OrderBookEntry> *OrderBook::get_orders(const OrderBookType &type,
+vector<OrderBookEntry> OrderBook::get_orders(const OrderBookType &type,
                                               const string &product,
                                               const string &timestamp) {
-  vector<OrderBookEntry> *result = new vector<OrderBookEntry>();
+  vector<OrderBookEntry> result;
 
-  for (OrderBookEntry const &e : *entries.release()) {
+  for (OrderBookEntry const &e : *entries) {
     if (e.type == type && e.product == product) {
-      result->push_back(e);
+      result.push_back(e);
     }
   }
 
@@ -136,11 +138,12 @@ vector<OrderBookEntry> *OrderBook::read_file_to_order_book(const string &path) {
 }
 
 // int main() {
-//   OrderBook book("../datasets/dataset.csv");
-//   for (const OrderBookEntry &e : *book.get_orders(OrderBookType::bid,
-//   "ETH/BTC", "uoae")) {
-//     cout << e.product << endl;
-//     cout << e.price << endl;
+//   OrderBook *book = new OrderBook("./datasets/dataset.csv");
+//   vector<OrderBookEntry>* ps = book->get_orders(
+//         OrderBookType::ask, "DOGE/USDT", "2020/03/17 17:01:24.884492");
+//   for (const OrderBookEntry &e : *ps) {
+//       cout << e.product << endl;
+//       cout << e.price << endl;
 //   }
 
 //   return -1;

@@ -27,18 +27,18 @@ void Menu::render() const {
 // Second invoke segmentation fault
 // TODO: DEBUG
 void Menu::print_market_stats(OrderBook *order_book) const {
-  for (string const &p : *order_book->get_known_products()) {
+  for (string const &p : order_book->get_known_products()) {
     cout << "Product: " << p << endl;
-    vector<OrderBookEntry> *entries = order_book->get_orders(
+    vector<OrderBookEntry> entries = order_book->get_orders(
         OrderBookType::ask, p, "2020/03/17 17:01:24.884492");
-    cout << "Asks seen: " << entries->size() << endl;
-    cout << "Max ask" << OrderBookEntryProcessor::compute_high_price(*entries)
+    cout << "Asks seen: " << entries.size() << endl;
+    cout << "Max ask" << OrderBookEntryProcessor::compute_high_price(entries)
          << endl;
-    cout << "Min ask" << OrderBookEntryProcessor::compute_low_price(*entries)
+    cout << "Min ask" << OrderBookEntryProcessor::compute_low_price(entries)
          << endl;
     cout << "Average ask"
-         << OrderBookEntryProcessor::compute_average_price(*entries) << endl;
-    cout << "Ask Spread" << OrderBookEntryProcessor::compute_price_spread(*entries)
+         << OrderBookEntryProcessor::compute_average_price(entries) << endl;
+    cout << "Ask Spread" << OrderBookEntryProcessor::compute_price_spread(entries)
          << endl;
   }
 }
@@ -70,6 +70,16 @@ void Menu::handle_choice(OrderBook *order_book) const {
     cout << "Invalid choice! Please select a number between 1 and 6.\n";
     break;
   }
+}
 
-  delete order_book;
+int main() { 
+    OrderBook order_book("./datasets/dataset.csv");
+    Menu menu{}; 
+    
+    while(1) {
+        menu.render();
+        menu.request_choice();
+        menu.handle_choice(&order_book);
+        order_book.get_known_products();
+    };
 }

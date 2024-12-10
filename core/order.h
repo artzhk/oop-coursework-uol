@@ -31,8 +31,8 @@ private:
 
 public:
   OrderBook(const string &_file_name);
-  vector<string> *get_known_products();
-  vector<OrderBookEntry> *get_orders(const OrderBookType &type,const string &product,
+  vector<string> get_known_products();
+  vector<OrderBookEntry> get_orders(const OrderBookType &type,const string &product,
                                      const string &timestamp);
 };
 

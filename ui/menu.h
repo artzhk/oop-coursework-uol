@@ -1,5 +1,5 @@
-#include <memory>
 #include "../core/order.h"
+#include <memory>
 
 using namespace std;
 
@@ -16,5 +16,5 @@ public:
   int get_choice() const;
   void request_choice();
   void render() const;
-  void handle_choice(OrderBook* order_book) const;
+  void handle_choice(OrderBook *order_book) const;
 };
