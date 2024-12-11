@@ -11,19 +11,16 @@ UTILS_DIR = utils
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-SRCS = $(wildcard $(SRC_DIR)/$(CORE_DIR)/*.cpp) \
-       $(wildcard $(SRC_DIR)/$(UTILS_DIR)/*.cpp) \
-       $(wildcard $(SRC_DIR)/$(UI_DIR)/*.cpp) \
+SRCS = $(wildcard $(CORE_DIR)/*.cpp) \
+       $(wildcard $(UTILS_DIR)/*.cpp) \
+       $(wildcard $(UI_DIR)/*.cpp) \
 			 main.cpp
 
 OBJS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
 TARGET = build/weatherAnalyzer
 
-$(info objects: $(OBJS))
-$(info target: $(TARGET))
-
-all: $(TARGET)
+build: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
