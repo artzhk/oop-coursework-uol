@@ -3,7 +3,7 @@ using namespace std;
 
 int main() {
   Menu *menu = new Menu();
-  OrderBook *order_book = new OrderBook("../datasets/dataset.csv");
+  OrderBook *order_book = new OrderBook("./datasets/dataset.csv");
   Core core{menu, order_book};
   Application app{&core};
 

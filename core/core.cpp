@@ -7,7 +7,7 @@ void Core::run_menu() {
   while (true) {
     menu->render();
     menu->request_choice();
-    menu->handle_choice(order_book.release());
+    menu->handle_choice(order_book.get());
   }
 }
 

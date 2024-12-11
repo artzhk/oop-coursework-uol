@@ -38,8 +38,8 @@ void Menu::print_market_stats(OrderBook *order_book) const {
          << endl;
     cout << "Average ask"
          << OrderBookEntryProcessor::compute_average_price(entries) << endl;
-    cout << "Ask Spread" << OrderBookEntryProcessor::compute_price_spread(entries)
-         << endl;
+    cout << "Ask Spread"
+         << OrderBookEntryProcessor::compute_price_spread(entries) << endl;
   }
 }
 
@@ -72,14 +72,14 @@ void Menu::handle_choice(OrderBook *order_book) const {
   }
 }
 
-int main() { 
-    OrderBook order_book("./datasets/dataset.csv");
-    Menu menu{}; 
-    
-    while(1) {
-        menu.render();
-        menu.request_choice();
-        menu.handle_choice(&order_book);
-        order_book.get_known_products();
-    };
-}
+// int main() {
+//   OrderBook order_book("./datasets/dataset.csv");
+//   Menu menu{};
+
+//   while (1) {
+//     menu.render();
+//     menu.request_choice();
+//     menu.handle_choice(&order_book);
+//     order_book.get_known_products();
+//   };
+// }
