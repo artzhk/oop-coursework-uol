@@ -21,7 +21,7 @@ public:
 class OrderBookMapper {
 private:
 public:
-  static OrderBookType map_string(string *value);
+  static OrderBookType map_string(const string &value);
 };
 
 class OrderBook {

@@ -80,10 +80,10 @@ OrderBookEntryProcessor::compute_low_price(vector<OrderBookEntry> &entries) {
   return lowest;
 }
 
-OrderBookType OrderBookMapper::map_string(string *value) {
-  if (*value == "ask")
+OrderBookType OrderBookMapper::map_string(const string &value) {
+  if (value == "ask")
     return OrderBookType::ask;
-  if (*value == "bid")
+  if (value == "bid")
     return OrderBookType::bid;
   return OrderBookType::uknown;
 }
@@ -125,12 +125,11 @@ vector<OrderBookEntry> *OrderBook::read_file_to_order_book(const string &path) {
   vector<OrderBookEntry> *entries = new vector<OrderBookEntry>();
   vector<string> rows = FileReader::read_file(path);
 
-  for (string row : rows) {
-    vector<string> *tokens = FileReader::tokenise(&row, ',');
-    OrderBookEntry entry{(*tokens)[0], (*tokens)[1],
-                         OrderBookMapper::map_string(&(*tokens)[2]),
-                         stod((*tokens)[3]), stod((*tokens)[4])};
-    delete tokens;
+  for (const string &row : rows) {
+    vector<string> tokens = FileReader::tokenise(row, ',');
+    OrderBookEntry entry{tokens[0], tokens[1],
+                         OrderBookMapper::map_string(tokens[2]),
+                         stod(tokens[3]), stod(tokens[4])};
     entries->push_back(entry);
   }
 
