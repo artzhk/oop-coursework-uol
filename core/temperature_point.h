@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include "./candlestick.h"
 
 using namespace std;
 
@@ -47,5 +48,6 @@ class TemparatureDataExtractor {
     public: 
         TemparatureDataExtractor();
         static vector<TemperaturePoint> get_temperature_data(const string &path);
+        static vector<DataPoint> get_points(const vector<TemperaturePoint> &points);
 };
 

@@ -1,13 +1,13 @@
 #include "./core.h"
 
-Core::Core(Menu *_menu, OrderBook *_order_book)
-    : menu(_menu), order_book(_order_book) {}
+Core::Core(Menu *_menu)
+    : menu(_menu) {}
 
 void Core::run_menu() {
   while (true) {
     menu->render();
     menu->request_choice();
-    menu->handle_choice(order_book.get());
+    menu->handle_choice();
   }
 }
 

@@ -1,17 +1,17 @@
-#include "../ui/menu.h"
+#include "../ui/menu/menu.h"
+#include "../ui/graph/graph.h"
+#include "./candlestick.h"
 
 class Core {
 private:
   unique_ptr<Menu> menu;
-  unique_ptr<OrderBook> order_book;
+  unique_ptr<Graph> graph;
 
 public:
-  Core(Menu *_menu, OrderBook *_order_book);
-  void init();
+  Core(Menu *_menu);
   void run_menu();
-  void enter_bid();
-  void enter_offer();
 };
+
 
 class Application {
 private:

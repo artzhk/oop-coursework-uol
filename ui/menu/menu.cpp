@@ -1,7 +1,4 @@
-#include <iostream>
-#include <memory>
-
-#include "../ui/menu.h"
+#include "./menu.h"
 
 using namespace std;
 
@@ -14,14 +11,7 @@ int Menu::get_choice() const { return *current_choice; }
 void Menu::request_choice() { cin >> *current_choice; }
 
 void Menu::render() const {
-  cout << "==Main Menu==" << endl;
-  cout << "1. Print help\n";
-  cout << "2. Print exchange stats\n";
-  cout << "3. Place an ask\n";
-  cout << "4. Place a bid\n";
-  cout << "5. Print wallet\n";
-  cout << "6. Continue\n";
-  cout << "Enter your choice (1-6): ";
+
 }
 
 // Second invoke segmentation fault
