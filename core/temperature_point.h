@@ -1,10 +1,10 @@
+#include <memory>
 #include <string>
 #include <vector>
-#include "./candlestick.h"
 
 using namespace std;
 
-enum eu_location {
+enum EULocation {
   at = 0,
   be = 1,
   bg = 2,
@@ -38,16 +38,32 @@ enum eu_location {
 
 class TemperaturePoint {
 public:
-  TemperaturePoint(eu_location _location, float _temperature, string date);
-  eu_location location;
+  TemperaturePoint(EULocation _location, float _temperature, string _date);
+
+  float getTemperature() const { return temperature; }
+  string getDate() const { return date; }
+  EULocation getLocation() const { return location; }
+
+private:
+  EULocation location;
   float temperature;
   string date;
 };
 
-class TemparatureDataExtractor {
-    public: 
-        TemparatureDataExtractor();
-        static vector<TemperaturePoint> get_temperature_data(const string &path);
-        static vector<DataPoint> get_points(const vector<TemperaturePoint> &points);
+class TemperaturePointsState {
+public:
+  TemperaturePointsState(const vector<TemperaturePoint> &_points)
+      : points(unique_ptr<vector<TemperaturePoint>>(
+            new vector<TemperaturePoint>(_points))) {};
+  void setData(const vector<TemperaturePoint> &_points);
+  const vector<TemperaturePoint> &getData();
+
+private:
+  unique_ptr<vector<TemperaturePoint>> points;
 };
 
+class TemparatureDataExtractor {
+public:
+  TemparatureDataExtractor();
+  static vector<TemperaturePoint> getTemperatures(const string &path);
+};

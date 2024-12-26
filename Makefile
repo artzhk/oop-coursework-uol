@@ -3,6 +3,8 @@ CXXFLAGS = -std=c++11 -Wall -Wextra -O2
 
 BUILD_DIR = build
 SRC_DIR = .
+GRAPH_DIR = ui/graph
+MENU_DIR = ui/graph
 UI_DIR = ui
 CORE_DIR = core
 UTILS_DIR = utils
@@ -13,6 +15,8 @@ $(BUILD_DIR):
 
 SRCS = $(wildcard $(CORE_DIR)/*.cpp) \
        $(wildcard $(UTILS_DIR)/*.cpp) \
+       $(wildcard $(GRAPH_DIR)/*.cpp) \
+       $(wildcard $(MENU_DIR)/*.cpp) \
        $(wildcard $(UI_DIR)/*.cpp) \
 			 main.cpp
 

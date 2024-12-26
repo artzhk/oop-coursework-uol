@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include <cmath>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -6,15 +7,9 @@ Canvas::Canvas() {
   struct winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   width = w.ws_col;
-  height = w.ws_row;
+  height = floor(w.ws_row * 0.8);
   grid = vector<vector<char>>(height, vector<char>(width, ' '));
 }
-
-vector<vector<char>> &Canvas::get_grid() { return this->grid; }
-
-int Canvas::get_width() { return this->width; }
-
-int Canvas::get_height() { return this->height; }
 
 void Canvas::rescale() {
   this->grid.resize(height, vector<char>(width, ' '));

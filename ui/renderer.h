@@ -16,9 +16,9 @@ private:
 public:
   Canvas();
   void rescale();
-  vector<vector<char>> &get_grid();
-  int get_width();
-  int get_height();
+  vector<vector<char>> *get_grid() { return &this->grid; }
+  int get_width() const { return width; }
+  int get_height() const { return height; }
 };
 
 class Renderer {
@@ -28,5 +28,6 @@ private:
   void render();
 
 public:
+  Renderer(Canvas _canvas, vector<IRenderable> _renderables);
   void add_renderable(IRenderable renderable);
 };

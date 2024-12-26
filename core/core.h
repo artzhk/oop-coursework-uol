@@ -8,7 +8,7 @@ private:
   unique_ptr<Graph> graph;
 
 public:
-  Core(Menu *_menu);
+  Core(Menu &_menu, Graph &_graph) : menu(unique_ptr<Menu>(&_menu)), graph(unique_ptr<Graph>(&_graph)) {};
   void run_menu();
 };
 
