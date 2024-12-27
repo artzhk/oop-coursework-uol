@@ -4,23 +4,61 @@
 
 class Menu;
 
-class IMenuState {
-public:
-  virtual void render();
-  virtual void handleChoice(Menu &menu, unsigned int choice);
+enum MenuMode { control, input };
 
-protected: 
-  void setState(Menu &menu, IMenuState *state);
+class MenuModeManager {
+public:
+  static MenuMode mode;
+  static void controlMode();
+  static void inputMode();
+
+private:
+  static struct termios oldt, newt;
 };
 
-class MainMenu : public IMenuState {
+class MenuState {
 public:
-  void render() override;
-  void handleChoice(Menu &menu, unsigned int choice) override;
+  virtual void render(Menu &menu) = 0;
+  virtual void handleChoice(Menu &menu, const unsigned int &choice) = 0;
+  const vector<string> &getOptions() { return options; }
+
+protected:
+  void setState(Menu &menu, MenuState *state);
+  vector<string> options;
+  string title;
+
+private:
+  virtual void printControlsHelp() = 0;
 };
 
-class GraphMenu : public IMenuState {
+class MainMenu : public MenuState {
 public:
-  void render() override;
-  void handleChoice(Menu &menu, unsigned int choice) override;
+  MainMenu();
+  void render(Menu &menu) override;
+  void handleChoice(Menu &menu, const unsigned int &choice) override;
+
+private:
+  void printControlsHelp() override;
+  void printHelp();
+};
+
+class WeatherPredictionMenu : public MenuState {
+public:
+  WeatherPredictionMenu();
+  void render(Menu &menu) override;
+  void handleChoice(Menu &menu, const unsigned int &choice) override;
+
+private:
+  void printControlsHelp() override;
+};
+
+class GraphMenu : public MenuState {
+public:
+  GraphMenu();
+  void render(Menu &menu) override;
+  void handleChoice(Menu &menu, const unsigned int &choice) override;
+
+private:
+  void printControlsHelp() override;
+  void printFiltersState();
 };

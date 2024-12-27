@@ -1,65 +1,68 @@
 #include "./menu.h"
+#include "states/menu_state.h"
+#include <iostream>
+#include <memory>
+#include <unistd.h>
+
+#define ESCAPE '\x1b'
+#define ARROW '['
+#define UP 'A'
+#define DOWN 'B'
 
 using namespace std;
 
-Menu::Menu() : current_choice(new int(0)) {}
+void Menu::changeState(const MenuState &_state) { *this->state = _state; }
 
-void Menu::set_choice(int value) { *current_choice = value; }
+void Menu::setChoice(const unsigned int &value) { this->currentChoice = value; }
 
-int Menu::get_choice() const { return *current_choice; }
+int Menu::getChoice() { return this->currentChoice; }
 
-void Menu::request_choice() { cin >> *current_choice; }
+void Menu::requestChoice() {
+  char input[3];
+  read(STDIN_FILENO, input, 3);
 
-void Menu::render() const {
+  const unsigned int optionsLength = this->state->getOptions().size();
 
-}
+  if (input[0] == ESCAPE) {
+    if (input[1] == ARROW) {
+      switch (input[2]) {
+      case UP:
+        this->setChoice((this->currentChoice - 1) % optionsLength);
+        break;
+      case DOWN:
+        this->setChoice((this->currentChoice + 1) % optionsLength);
+        break;
+      }
+    }
+  }
 
-// Second invoke segmentation fault
-// TODO: DEBUG
-void Menu::print_market_stats(OrderBook *order_book) const {
-  for (string const &p : order_book->get_known_products()) {
-    cout << "Product: " << p << endl;
-    vector<OrderBookEntry> entries = order_book->get_orders(
-        OrderBookType::ask, p, "2020/03/17 17:01:24.884492");
-    cout << "Asks seen: " << entries.size() << endl;
-    cout << "Max ask" << OrderBookEntryProcessor::compute_high_price(entries)
-         << endl;
-    cout << "Min ask" << OrderBookEntryProcessor::compute_low_price(entries)
-         << endl;
-    cout << "Average ask"
-         << OrderBookEntryProcessor::compute_average_price(entries) << endl;
-    cout << "Ask Spread"
-         << OrderBookEntryProcessor::compute_price_spread(entries) << endl;
+  if (input[0] != ESCAPE) {
+    switch (input[0]) {
+    case 'j':
+      this->setChoice((this->currentChoice - 1) % optionsLength);
+      break;
+    case 'k':
+      this->setChoice((this->currentChoice + 1) % optionsLength);
+      break;
+    case 'q':
+      cout << "Quitting..." << endl;
+      exit(0);
+      break;
+    case '\n':
+      this->state->handleChoice(*this, this->currentChoice);
+      break;
+    }
   }
 }
 
-void Menu::handle_choice(OrderBook *order_book) const {
-  cout << "\n\nYou selected: " << *current_choice << endl;
-  switch (*current_choice) {
-  case 1:
-    cout << "Help: This is a simple trading application. Select options "
-            "from the menu to interact.\n";
-    break;
-  case 2:
-    cout << "Exchange stats: No data available right now.\n";
-    print_market_stats(order_book);
-    break;
-  case 3:
-    cout << "Place ask: Enter the amount you'd like to sell.\n";
-    break;
-  case 4:
-    cout << "Place bid: Enter the amount you'd like to buy.\n";
-    break;
-  case 5:
-    cout << "Wallet: Your current balance is $1000.\n";
-    break;
-  case 6:
-    cout << "Continuing...\n";
-    break;
-  default:
-    cout << "Invalid choice! Please select a number between 1 and 6.\n";
-    break;
-  }
+void Menu::run() { 
+    this->state->render(*this); 
+    this->requestChoice();
+    this->handleChoice();
+}
+
+void Menu::handleChoice() {
+  this->state->handleChoice(*this, this->currentChoice);
 }
 
 // int main() {
