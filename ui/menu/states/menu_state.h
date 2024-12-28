@@ -1,6 +1,8 @@
 #pragma once
+#include <string>
+#include <vector>
 
-#include "../menu.h"
+using namespace std;
 
 class Menu;
 
@@ -19,7 +21,7 @@ private:
 class MenuState {
 public:
   virtual void render(Menu &menu) = 0;
-  virtual void handleChoice(Menu &menu, const unsigned int &choice) = 0;
+  virtual void handleChoice(Menu &menu, const unsigned int &optionIndex) = 0;
   const vector<string> &getOptions() { return options; }
 
 protected:
@@ -35,7 +37,7 @@ class MainMenu : public MenuState {
 public:
   MainMenu();
   void render(Menu &menu) override;
-  void handleChoice(Menu &menu, const unsigned int &choice) override;
+  void handleChoice(Menu &menu, const unsigned int &optionIndex) override;
 
 private:
   void printControlsHelp() override;
@@ -46,19 +48,40 @@ class WeatherPredictionMenu : public MenuState {
 public:
   WeatherPredictionMenu();
   void render(Menu &menu) override;
-  void handleChoice(Menu &menu, const unsigned int &choice) override;
+  void handleChoice(Menu &menu, const unsigned int &optionIndex) override;
 
 private:
-  void printControlsHelp() override;
 };
 
 class GraphMenu : public MenuState {
 public:
   GraphMenu();
   void render(Menu &menu) override;
-  void handleChoice(Menu &menu, const unsigned int &choice) override;
+  void handleChoice(Menu &menu, const unsigned int &optionIndex) override;
 
 private:
   void printControlsHelp() override;
   void printFiltersState();
+};
+
+class FilterMenu : public MenuState {
+public:
+  FilterMenu();
+  void render(Menu &menu) override;
+  void handleChoice(Menu &menu, const unsigned int &optionIndex) override;
+
+private:
+  void printCountries();
+};
+
+class CountrySelectionMenu : public MenuState {
+public:
+  CountrySelectionMenu();
+  void render(Menu &menu) override;
+  void handleChoice(Menu &menu, const unsigned int &optionIndex) override;
+
+private:
+  void printControlsHelp() override;
+  void printCountries();
+  vector<string> countries();
 };

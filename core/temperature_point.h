@@ -1,5 +1,8 @@
+#pragma once
+
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -35,6 +38,18 @@ enum EULocation {
   sk = 27,
   uknown = 255,
 };
+
+static const unordered_map<string, EULocation> locationsMap = {
+    {"at", EULocation::at}, {"be", EULocation::be}, {"bg", EULocation::bg},
+    {"ch", EULocation::ch}, {"cz", EULocation::cz}, {"de", EULocation::de},
+    {"dk", EULocation::dk}, {"ee", EULocation::ee}, {"es", EULocation::es},
+    {"fi", EULocation::fi}, {"fr", EULocation::fr}, {"gb", EULocation::gb},
+    {"gr", EULocation::gr}, {"hr", EULocation::hr}, {"hu", EULocation::hu},
+    {"ie", EULocation::ie}, {"it", EULocation::it}, {"lt", EULocation::lt},
+    {"lu", EULocation::lu}, {"lv", EULocation::lv}, {"nl", EULocation::nl},
+    {"no", EULocation::no}, {"pl", EULocation::pl}, {"pt", EULocation::pt},
+    {"ro", EULocation::ro}, {"se", EULocation::se}, {"si", EULocation::si},
+    {"sk", EULocation::sk}};
 
 class TemperaturePoint {
 public:

@@ -11,6 +11,10 @@
 
 using namespace std;
 
+Menu::Menu(const TemperatureMenuDataTransfer &_parser)
+      : currentChoice(0), state(unique_ptr<MenuState>(new MainMenu())),
+        parser(unique_ptr<TemperatureMenuDataTransfer>(new TemperatureMenuDataTransfer())),
+        coreEvents(unique_ptr<ExternalCoreEvents>(new ExternalCoreEvents(false, false))) {};
 void Menu::changeState(const MenuState &_state) { *this->state = _state; }
 
 void Menu::setChoice(const unsigned int &value) { this->currentChoice = value; }
@@ -38,6 +42,11 @@ void Menu::requestChoice() {
 
   if (input[0] != ESCAPE) {
     switch (input[0]) {
+    case 'G':
+      this->coreEvents->graph = !this->coreEvents->graph;
+      break;
+    case 'F':
+      this->changeState(MainMenu());
     case 'j':
       this->setChoice((this->currentChoice - 1) % optionsLength);
       break;
@@ -55,24 +64,78 @@ void Menu::requestChoice() {
   }
 }
 
-void Menu::run() { 
-    this->state->render(*this); 
-    this->requestChoice();
-    this->handleChoice();
+void Menu::run() {
+  this->state->render(*this);
+  this->requestChoice();
+  this->handleChoice();
+
+  return;
 }
 
 void Menu::handleChoice() {
   this->state->handleChoice(*this, this->currentChoice);
 }
+void Menu::setCoreEvents(bool showGraph) {
+  this->coreEvents->graph = showGraph;
+}
 
-// int main() {
-//   OrderBook order_book("./datasets/dataset.csv");
-//   Menu menu{};
+const ExternalCoreEvents &Menu::getCoreEvents() { return *this->coreEvents; }
 
-//   while (1) {
-//     menu.render();
-//     menu.request_choice();
-//     menu.handle_choice(&order_book);
-//     order_book.get_known_products();
-//   };
-// }
+Menu *Menu::instance = nullptr;
+mutex Menu::mutex_;
+
+Menu *Menu::getInstance(const TemperatureMenuDataTransfer &_parser) {
+  lock_guard<mutex> lock(mutex_);
+
+  if (!Menu::instance) {
+    Menu::instance = new Menu(_parser);
+  }
+
+  return Menu::instance;
+}
+
+void FiltersDTO::setTimeRange(const pair<string, string> &_timeRange) {
+  this->timeRange = _timeRange;
+};
+
+void FiltersDTO::setLocation(const EULocation &_location) {
+  this->location = _location;
+}
+const pair<string, string> &FiltersDTO::getTimeRange() {
+  return this->timeRange;
+}
+
+const EULocation &FiltersDTO::getLocation() { return this->location; }
+
+void GraphParametersDTO::setScale(const unsigned int &_scale) {
+  this->scale = _scale;
+}
+
+unsigned int GraphParametersDTO::getScale() { return this->scale; }
+
+
+  void TemperatureMenuDataTransfer::setGraphParameters(const GraphParametersDTO &_graphParameters) {
+      *this->graphParameters = _graphParameters;
+  }
+  void TemperatureMenuDataTransfer::setFilters(const FiltersDTO &_filters) {
+      *this->filters = _filters;
+  }
+
+  const FiltersDTO &TemperatureMenuDataTransfer::getFilters() {
+      return *this->filters;
+  }
+
+  const GraphParametersDTO &TemperatureMenuDataTransfer::getGraphParameters() {
+      return *this->graphParameters;
+  }
+
+int main() {
+  TemperatureMenuDataTransfer *parser = new TemperatureMenuDataTransfer();
+  Menu *menu = Menu::getInstance(*parser);
+
+  while (1) {
+      menu->run();
+  };
+}
+
+

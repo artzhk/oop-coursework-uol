@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../ui/menu/menu.h"
 #include "../ui/graph/graph.h"
 #include "./candlestick.h"
