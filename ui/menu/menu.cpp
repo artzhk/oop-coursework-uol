@@ -129,13 +129,13 @@ unsigned int GraphParametersDTO::getScale() { return this->scale; }
       return *this->graphParameters;
   }
 
-int main() {
-  TemperatureMenuDataTransfer *parser = new TemperatureMenuDataTransfer();
-  Menu *menu = Menu::getInstance(*parser);
+// int main() {
+//   TemperatureMenuDataTransfer *parser = new TemperatureMenuDataTransfer();
+//   Menu *menu = Menu::getInstance(*parser);
 
-  while (1) {
-      menu->run();
-  };
-}
+//   while (1) {
+//       menu->run();
+//   };
+// }
 
 

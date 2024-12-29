@@ -20,9 +20,11 @@ private:
 
 class MenuState {
 public:
-  virtual void render(Menu &menu) = 0;
-  virtual void handleChoice(Menu &menu, const unsigned int &optionIndex) = 0;
+  inline virtual void render(Menu &menu) = 0;
+  inline virtual void handleChoice(Menu &menu, const unsigned int &optionIndex) = 0;
   const vector<string> &getOptions() { return options; }
+
+  inline virtual ~MenuState() = default;
 
 protected:
   void setState(Menu &menu, MenuState *state);
@@ -82,6 +84,6 @@ public:
 
 private:
   void printControlsHelp() override;
-  void printCountries();
+  void printCountries(Menu &menu);
   vector<string> countries();
 };

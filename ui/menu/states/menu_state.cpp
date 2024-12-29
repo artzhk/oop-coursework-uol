@@ -132,6 +132,35 @@ CountrySelectionMenu::CountrySelectionMenu() {
   MenuModeManager::controlMode();
 }
 
+void CountrySelectionMenu::printCountries(Menu &menu) {
+  if (options.size()) {
+    cout << "Invalid countries size" << endl;
+  }
+
+  if (options.size() == 1) {
+    cout << options[0] << endl;
+  }
+
+  for (unsigned int i = 1; i < options.size(); i++) {
+    if (menu.getChoice() == i) {
+      if (i % 2 == 1) {
+        cout << i << ". " << options[i - 1] << " | " << " > " << (i + 1) << ". "
+             << options[i] << " < " << endl;
+
+        continue;
+      }
+
+      cout << " > " << i << ". " << options[i - 1] << " < " << " | " << (i + 1)
+           << ". " << options[i] << endl;
+    } else {
+      cout << i << ". " << options[i - 1] << " | " << (i + 1) << ". "
+           << options[i] << endl;
+    }
+  }
+
+  return;
+}
+
 void CountrySelectionMenu::handleChoice(Menu &menu,
                                         const unsigned int &choice) {
   if (choice >= options.size()) {
