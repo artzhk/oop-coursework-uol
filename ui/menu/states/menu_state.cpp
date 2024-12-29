@@ -8,7 +8,11 @@
 #include <unistd.h>
 #include <utility>
 
+MenuMode MenuModeManager::mode;
+struct termios MenuModeManager::oldt, MenuModeManager::newt;
+
 void MenuModeManager::controlMode() {
+
   if (mode == MenuMode::control) {
     return;
   }
@@ -94,6 +98,8 @@ void MainMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   return;
 }
 
+void MainMenu::printHelp() { cout << "This is help" << endl; }
+
 GraphMenu::GraphMenu() {
   title = "Graph Menu";
   options = {
@@ -136,9 +142,9 @@ void CountrySelectionMenu::handleChoice(Menu &menu,
 }
 
 vector<string> CountrySelectionMenu::countries() {
-  vector<string> countries;
+  vector<string> countries{};
 
-  for (pair<string, EULocation> locationPair : locationsMap) {
+  for (const pair<string, EULocation> &locationPair : locationsMap) {
     if (locationPair.second == EULocation::uknown) {
       continue;
     }
