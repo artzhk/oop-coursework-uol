@@ -31,6 +31,8 @@ protected:
   vector<string> options;
   string title;
   virtual void printControlsHelp() = 0;
+  // TODO: Do not forget to override
+  virtual void displayInputField() = 0;
 };
 
 class MainMenu : public MenuState {
