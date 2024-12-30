@@ -66,7 +66,7 @@ public:
   void operator=(const Menu &) = delete;
 
   static Menu *getInstance(const TemperatureMenuDataTransfer &_parser);
-  void changeState(const MenuState &_state);
+  void changeState(MenuState *_state);
 
   void setChoice(const unsigned int &value);
   int getChoice();

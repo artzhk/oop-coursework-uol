@@ -20,18 +20,16 @@ private:
 
 class MenuState {
 public:
-  inline virtual void render(Menu &menu) = 0;
-  inline virtual void handleChoice(Menu &menu, const unsigned int &optionIndex) = 0;
+  virtual void render(Menu &menu) = 0;
+  virtual void handleChoice(Menu &menu, const unsigned int &optionIndex) = 0;
   const vector<string> &getOptions() { return options; }
 
-  inline virtual ~MenuState() = default;
+  virtual ~MenuState() = default;
 
 protected:
   void setState(Menu &menu, MenuState *state);
   vector<string> options;
   string title;
-
-private:
   virtual void printControlsHelp() = 0;
 };
 

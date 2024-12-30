@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <utility>
 
-MenuMode MenuModeManager::mode;
+MenuMode MenuModeManager::mode = MenuMode::input;
 struct termios MenuModeManager::oldt, MenuModeManager::newt;
 
 void MenuModeManager::controlMode() {
@@ -16,6 +16,8 @@ void MenuModeManager::controlMode() {
   if (mode == MenuMode::control) {
     return;
   }
+
+  cout << "works " << endl;
 
   tcgetattr(STDIN_FILENO, &oldt);
   newt = oldt;
@@ -72,6 +74,12 @@ void MenuState::render(Menu &menu) {
   return;
 }
 
+void MenuState::handleChoice(Menu &menu, const unsigned int &optionIndex) {
+  cout << "Invalid choice! Please select a number between 1 and "
+       << this->options.size() << "." << endl;
+  return;
+}
+
 MainMenu::MainMenu() {
   title = "Main Menu";
   options = {"1. Help", "2. Weather Graph", "3. Weather Prediction",
@@ -79,15 +87,17 @@ MainMenu::MainMenu() {
   MenuModeManager::controlMode();
 }
 
+void MainMenu::render(Menu &menu) { MenuState::render(menu); }
+
 void MainMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   if (optionIndex + 1 == 1) {
     this->printHelp();
   } else if (optionIndex + 1 == 2) {
-    menu.changeState(GraphMenu());
+    menu.changeState(new GraphMenu());
   } else if (optionIndex + 1 == 3) {
-    menu.changeState(GraphMenu());
+    menu.changeState(new GraphMenu());
   } else if (optionIndex + 1 == 4) {
-    menu.changeState(CountrySelectionMenu());
+    menu.changeState(new CountrySelectionMenu());
   } else if (optionIndex + 1 == 5) {
     exit(0);
   } else {
@@ -98,7 +108,12 @@ void MainMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   return;
 }
 
-void MainMenu::printHelp() { cout << "This is help" << endl; }
+void MainMenu::printHelp() {
+  cout << "This is a weather application that displays weather data for "
+       << "different countries. " << endl;
+}
+
+void MainMenu::printControlsHelp() { MenuState::printControlsHelp(); }
 
 GraphMenu::GraphMenu() {
   title = "Graph Menu";
@@ -110,18 +125,28 @@ GraphMenu::GraphMenu() {
   MenuModeManager::controlMode();
 }
 
-void GraphMenu::handleChoice(Menu &menu, const unsigned int &choice) {
-  if (choice == 1) {
-    menu.setCoreEvents(true);
-  } else if (choice == 2) {
-    menu.changeState(MainMenu());
-  } else if (choice == 3) {
-    menu.changeState(MainMenu());
+void GraphMenu::render(Menu &menu) {
+  MenuState::render(menu);
+  return;
+}
+
+void GraphMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
+  if (optionIndex + 1 == 1) {
+    menu.changeState(new MainMenu());
+  } else if (optionIndex + 1 == 2) {
+    menu.changeState(new MainMenu());
+  } else if (optionIndex + 1 == 3) {
+    menu.changeState(new MainMenu());
   } else {
     cout << "Invalid choice! Please select a number between 1 and "
          << this->options.size() << "." << endl;
   }
 
+  return;
+}
+
+void GraphMenu::printControlsHelp() {
+  MenuState::printControlsHelp();
   return;
 }
 
@@ -132,13 +157,13 @@ CountrySelectionMenu::CountrySelectionMenu() {
   MenuModeManager::controlMode();
 }
 
-void CountrySelectionMenu::printCountries(Menu &menu) {
+void CountrySelectionMenu::render(Menu &menu) {
   if (options.size()) {
     cout << "Invalid countries size" << endl;
   }
 
   if (options.size() == 1) {
-    cout << options[0] << endl;
+    cout << "1. " << options[0] << endl;
   }
 
   for (unsigned int i = 1; i < options.size(); i++) {
@@ -162,12 +187,16 @@ void CountrySelectionMenu::printCountries(Menu &menu) {
 }
 
 void CountrySelectionMenu::handleChoice(Menu &menu,
-                                        const unsigned int &choice) {
-  if (choice >= options.size()) {
+                                        const unsigned int &optionIndex) {
+  if (optionIndex >= options.size()) {
     cout << "Invalid choice! Please select a number between 1 and "
          << this->options.size() << "." << endl;
     return;
   }
+}
+
+void CountrySelectionMenu::printControlsHelp() {
+  MenuState::printControlsHelp();
 }
 
 vector<string> CountrySelectionMenu::countries() {
