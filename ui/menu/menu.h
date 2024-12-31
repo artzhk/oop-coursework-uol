@@ -1,11 +1,12 @@
 #pragma once
 
 #include "../../core/order.h"
-#include "../../core/temperature_point.h"
 #include "states/menu_state.h"
 
 #include <memory>
 #include <mutex>
+#include <unordered_map>
+#include <vector>
 
 using namespace std;
 
@@ -29,33 +30,36 @@ public:
   GraphParametersDTO() : scale(0) {};
   void setScale(const unsigned int &_scale);
   unsigned int getScale();
-private: 
+
+private:
   unsigned int scale;
 };
 
-class FiltersDTO {
+enum FilterType { timeRange, location };
+
+extern const unordered_map<FilterType, string> filtersMap;
+
+template <typename T> class FilterDTO {
 public:
-  FiltersDTO() : timeRange(make_pair("1980-01-01T00:00:00Z", "2019-12-31T23:00:00Z")), location(EULocation::uknown) {};
-  void setTimeRange(const pair<string, string> &_timeRange);
-  void setLocation(const EULocation &_location);
-  const pair<string, string> &getTimeRange();
-  const EULocation &getLocation();
-private: 
-  pair<string, string> timeRange;
-  EULocation location;
+  FilterDTO(T _value, FilterType _type) : value(_value), type(_type) {};
+  T value;
+  FilterType type;
 };
 
 class TemperatureMenuDataTransfer {
 public:
-  TemperatureMenuDataTransfer() : graphParameters(new GraphParametersDTO()), filters(new FiltersDTO()) {};
+  TemperatureMenuDataTransfer()
+      : graphParameters(new GraphParametersDTO()), filters(new vector<FilterDTO<string>>()) {};
 
   void setGraphParameters(const GraphParametersDTO &_graphParameters);
-  void setFilters(const FiltersDTO &_filters);
-  const FiltersDTO &getFilters();
   const GraphParametersDTO &getGraphParameters();
+
+  void setFilters(const vector<FilterDTO<string>> &_filters);
+  const vector<FilterDTO<string>> &getFilters();
+
 private:
-  unique_ptr<GraphParametersDTO> graphParameters;
-  unique_ptr<FiltersDTO> filters;
+  shared_ptr<GraphParametersDTO> graphParameters;
+  shared_ptr<vector<FilterDTO<string>>> filters;
 };
 
 class Menu {
@@ -63,6 +67,7 @@ class Menu {
 
 public:
   Menu(Menu &other) = delete;
+  ~Menu();
   void operator=(const Menu &) = delete;
 
   static Menu *getInstance(const TemperatureMenuDataTransfer &_parser);
@@ -70,11 +75,17 @@ public:
 
   void setChoice(const unsigned int &value);
   int getChoice();
-  void requestChoice();
   void handleChoice();
+  void handleInput();
+
+  void requestChoice();
+  void reqeustInput();
 
   void setCoreEvents(bool showGraph);
   const ExternalCoreEvents &getCoreEvents();
+
+  void setParser(TemperatureMenuDataTransfer &_parser);
+  const TemperatureMenuDataTransfer &getParser();
 
   void run();
 
@@ -88,5 +99,5 @@ private:
 
   unique_ptr<MenuState> state;
   unique_ptr<ExternalCoreEvents> coreEvents;
-  unique_ptr<TemperatureMenuDataTransfer> parser;
+  shared_ptr<TemperatureMenuDataTransfer> parser;
 };

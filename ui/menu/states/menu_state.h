@@ -5,6 +5,8 @@
 using namespace std;
 
 class Menu;
+template <typename T>
+class FilterDTO;
 
 enum MenuMode { control, input };
 
@@ -32,7 +34,6 @@ protected:
   string title;
   virtual void printControlsHelp() = 0;
   // TODO: Do not forget to override
-  virtual void displayInputField() = 0;
 };
 
 class MainMenu : public MenuState {
@@ -72,8 +73,13 @@ public:
   void render(Menu &menu) override;
   void handleChoice(Menu &menu, const unsigned int &optionIndex) override;
 
+  void setFiltersView(const vector<FilterDTO<string>> &filtersView);
+  vector<FilterDTO<string>> getFiltersView();
+
 private:
-  void printCountries();
+  void printControlsHelp() override;
+  vector<string> generateFilters();
+  vector<FilterDTO<string>> filtersView;
 };
 
 class CountrySelectionMenu : public MenuState {

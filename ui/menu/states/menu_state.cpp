@@ -4,6 +4,7 @@
 #include "../menu.h"
 
 #include <iostream>
+#include <string>
 #include <termios.h>
 #include <unistd.h>
 #include <utility>
@@ -16,8 +17,6 @@ void MenuModeManager::controlMode() {
   if (mode == MenuMode::control) {
     return;
   }
-
-  cout << "works " << endl;
 
   tcgetattr(STDIN_FILENO, &oldt);
   newt = oldt;
@@ -80,6 +79,13 @@ void MenuState::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   return;
 }
 
+// void MenuState::displayInputField(Menu &menu) {
+//   cout << "Input the value" << endl;
+//   MenuModeManager::inputMode();
+
+//   return;
+// }
+
 MainMenu::MainMenu() {
   title = "Main Menu";
   options = {"1. Help", "2. Weather Graph", "3. Weather Prediction",
@@ -134,7 +140,7 @@ void GraphMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   if (optionIndex + 1 == 1) {
     menu.changeState(new MainMenu());
   } else if (optionIndex + 1 == 2) {
-    menu.changeState(new MainMenu());
+    menu.changeState(new FilterMenu());
   } else if (optionIndex + 1 == 3) {
     menu.changeState(new MainMenu());
   } else {
@@ -186,6 +192,11 @@ void CountrySelectionMenu::render(Menu &menu) {
   return;
 }
 
+
+void FilterMenu::printControlsHelp() {
+    MenuState::printControlsHelp();
+}
+
 void CountrySelectionMenu::handleChoice(Menu &menu,
                                         const unsigned int &optionIndex) {
   if (optionIndex >= options.size()) {
@@ -211,4 +222,93 @@ vector<string> CountrySelectionMenu::countries() {
   }
 
   return countries;
+}
+
+FilterMenu::FilterMenu() {
+  options = generateFilters();
+  title = "Filter Menu";
+  MenuModeManager::controlMode();
+}
+
+void FilterMenu::render(Menu &menu) {
+  cout << "==== " << this->title << " ====" << endl;
+  cout << "==== " << "Select Filter to Edit it." << " ====" << endl;
+
+  if (MenuModeManager::mode == MenuMode::control) {
+    this->printControlsHelp();
+  }
+
+  for (unsigned int i = 0; i < options.size(); i++) {
+    if (i == menu.getChoice()) {
+      cout << " > " << options[i] << " < " << endl;
+    } else {
+      cout << "   " << options[i] << "   " << endl;
+    }
+  }
+
+  return;
+}
+
+void FilterMenu::setFiltersView(const vector<FilterDTO<string>> &filtersView) {
+  this->filtersView = filtersView;
+}
+
+vector<FilterDTO<string>> FilterMenu::getFiltersView() { return filtersView; }
+
+vector<string> FilterMenu::generateFilters() {
+  vector<string> options{};
+  vector<FilterDTO<string>> filtersView{};
+
+  unsigned int i = 1;
+  for (const pair<FilterType, string> &filterPair : filtersMap) {
+    options.emplace_back(to_string(i) + ". " + filterPair.second);
+    filtersView.emplace_back(FilterDTO<string>("", filterPair.first));
+    ++i;
+  }
+
+  setFiltersView(filtersView);
+  options.emplace_back(to_string(i) + ". Back");
+
+  return options;
+}
+
+void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
+  if (optionIndex >= options.size() || optionIndex < 0) {
+    cout << "Invalid choice! Please select a number between 1 and "
+         << this->options.size() << "." << endl;
+    return;
+  }
+  vector<FilterDTO<string>> filtersView = getFiltersView();
+
+  if (options.size() == optionIndex + 1) {
+      menu.changeState(new FilterMenu());
+      return;
+  }
+
+  MenuModeManager::inputMode();
+
+  cout << "Enter the value for the filter: "
+       << filtersMap.at(filtersView[optionIndex].type) << endl;
+
+  string value;
+  cin >> value;
+
+  filtersView[optionIndex].value = value;
+
+  TemperatureMenuDataTransfer parser = menu.getParser();
+  vector<FilterDTO<string>> filters = parser.getFilters();
+
+  for (unsigned int i = 0; i < filters.size(); i++) {
+    if (filters[i].type == filtersView[optionIndex].type) {
+      filters[i].value = filtersView[optionIndex].value;
+      break;
+    }
+  }
+
+  parser.setFilters(filters);
+  menu.setParser(parser);
+
+  MenuModeManager::controlMode();
+
+  return;
 }
