@@ -1,40 +1,55 @@
 #import "candlestick.h"
 #import "../utils/logger.h"
+#include "temperature_point.h"
 
 vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
-    const vector<TemperaturePoint> &points, unsigned int hoursStep) {
+    const vector<TemperaturePoint> &points, unsigned int hoursStep,
+    EULocation location) {
   vector<Candlestick> candlesticks{};
 
   auto *logger = Logger::getInstance(EnvType::DEV);
-  for (unsigned int i = 0; i < points.size(); i += hoursStep) {
-    float initial = points[i].getTemperature();
+
+  vector<TemperaturePoint> filteredPoints{};
+
+  for (const TemperaturePoint &point : points) {
+    if (point.getLocation() != location) {
+      continue;
+    }
+
+    filteredPoints.emplace_back(point);
+  }
+
+  for (unsigned int i = 0; i < filteredPoints.size(); i += hoursStep) {
+    const TemperaturePoint &point = filteredPoints[i];
+    float initial = point.getTemperature();
 
     float open = initial;
     float high = initial;
     float low = initial;
     float close = 0;
 
-    string date = points[i].getDate();
+    string date = point.getDate();
 
     for (unsigned int j = i; j < i + hoursStep; j++) {
-      if (j >= points.size()) {
+      const TemperaturePoint &everyTimePoint = filteredPoints[j];
+      if (j >= filteredPoints.size()) {
         break;
       }
 
-      if (points[j].getTemperature() > high) {
-        high = points[j].getTemperature();
+      if (everyTimePoint.getTemperature() > high) {
+        high = everyTimePoint.getTemperature();
       }
 
-      if (points[j].getTemperature() < low) {
-        low = points[j].getTemperature();
+      if (everyTimePoint.getTemperature() < low) {
+        low = everyTimePoint.getTemperature();
       }
     }
 
     if (i == 0 && close == 0) {
-      close = points[i].getTemperature();
+      close = point.getTemperature();
     }
 
-    candlesticks.emplace_back(date, open, high, close);
+    candlesticks.emplace_back(date, open, high, low, close);
     close = open;
   }
 
@@ -54,21 +69,22 @@ float CandlestickProcessor::getAverageMean(
 }
 
 float CandlestickProcessor::getLowest(const vector<Candlestick> &candlesticks) {
-  float lowest = candlesticks[0].close;
+  float lowest = candlesticks[0].low;
   for (const Candlestick &candlestick : candlesticks) {
-    if (candlestick.close < lowest) {
-      lowest = candlestick.close;
+    if (candlestick.low < lowest) {
+      lowest = candlestick.low;
     }
   }
 
   return lowest;
 }
 
-float CandlestickProcessor::getHighest(const vector<Candlestick> &candlesticks) {
-  float highest = candlesticks[0].close;
+float CandlestickProcessor::getHighest(
+    const vector<Candlestick> &candlesticks) {
+  float highest = candlesticks[0].high;
   for (const Candlestick &candlestick : candlesticks) {
-    if (candlestick.close > highest) {
-      highest = candlestick.close;
+    if (candlestick.high > highest) {
+      highest = candlestick.high;
     }
   }
 

@@ -10,7 +10,7 @@ Canvas::Canvas() {
   struct winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   width = w.ws_col;
-  height = floor(w.ws_row * 0.8);
+  height = floor(w.ws_row * 0.85);
   grid = vector<vector<char>>(height, vector<char>(width, ' '));
 }
 
@@ -53,17 +53,11 @@ Renderer::modifyGrid(const vector<RenderPoint> &renderPoints) {
 
   auto *logger = Logger::getInstance(EnvType::DEV);
 
-  // logger->log(to_string(renderPoints.size()));
-  // logger->log("Lenght" + to_string(grid[0].size()));
-  // logger->log("Height" + to_string(grid.size()));
-
   for (int i = 0; i < renderPoints.size(); ++i) {
     const int &x = renderPoints[i].x;
     const int &y = renderPoints[i].y;
     const char &symbol = renderPoints[i].symbol;
 
-    // logger->log("X: " + to_string(x) + " Y: " + to_string(y) +
-    //         " SYMBOL: " + symbol);
     if ((y >= 0 && y < grid.size()) && (x >= 0 && x < grid[y].size())) {
       grid[y][x] = symbol;
     }

@@ -13,13 +13,13 @@ public:
   float close;
   float low;
 
-  Candlestick(string _date, float _open, float _high, float _close)
-      : date(_date), open(_open), high(_high), close(_close) {}
+  Candlestick(string _date, float _open, float _high, float _low, float _close)
+      : date(_date), open(_open), high(_high), low(_low), close(_close) {}
 };
 
 class CandlestickDataExtractor {
 public:
-  static vector<Candlestick> getCandlesticks(const vector<TemperaturePoint> &points, unsigned int hoursStep = 24);
+  static vector<Candlestick> getCandlesticks(const vector<TemperaturePoint> &points, unsigned int hoursStep = 24, EULocation location = EULocation::de);
 };
 
 class CandlestickProcessor {

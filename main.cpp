@@ -11,10 +11,11 @@ int main() {
 
   Canvas canvas{};
   Renderer renderer{canvas};
-  
-  const vector<Candlestick> candlesticks{CandlestickDataExtractor::getCandlesticks(
-      TemparatureDataExtractor::getTemperatures("./datasets/weather_data.csv"),
-      24)};
+
+  const vector<Candlestick> candlesticks{
+      CandlestickDataExtractor::getCandlesticks(
+          TemparatureDataExtractor::getTemperatures(
+              "./datasets/weather_data.csv"), 24)};
 
   Graph graph{candlesticks};
 

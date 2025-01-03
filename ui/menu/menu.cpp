@@ -161,7 +161,7 @@ TemperatureMenuDataTransfer::TemperatureMenuDataTransfer(
             FilterDTO<string>("1980-01-01T00:00:00Z|2019-12-31T23:00:00Z",
                               FilterType::timeRange),
             FilterDTO<string>(
-                LocationEnumProcessor::locationToString(EULocation::gr),
+                LocationEnumProcessor::locationToString(EULocation::de),
                 FilterType::location),
         }));
   }
