@@ -3,6 +3,7 @@
 #include "../../../utils/terminalTextStyles.h"
 #include "../menu.h"
 
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <termios.h>
@@ -46,27 +47,37 @@ void MenuState::printControlsHelp() {
   cout << "Controls: " << endl;
   cout << "  - Type " << BOLD << "\"Shift + i\"" << RESET
        << "to hide this help. " << endl;
-  cout << "  - Type \"Shift + g\" to display graph. " << endl;
-  cout << "  - Type \"Shift + f\" to display filters. " << endl;
+  cout << "  - Type " << BOLD << "\"Shift + g\"" << RESET
+       << " to display graph. " << endl;
+  cout << "  - Type " << BOLD << "\"Shift + f\"" << RESET
+       << " to display filters. " << endl;
   cout << "  - Use the arrow keys to navigate the menu." << endl;
-  cout << "  - Or use j, k, h, l to navigate the menu." << endl;
-  cout << "  - Press 'Enter' to select an option." << endl;
-  cout << "  - Press 'q' to quit the application." << endl;
+  cout << "  - Or use " << BOLD << "j, k, h, l " << RESET
+       << "to navigate the menu." << endl;
+  cout << "  - Press " << BOLD << "'Space' " << RESET << "to select an option."
+       << endl;
+  cout << "  - Press " << BOLD << "'q' " << RESET << "to quit the application."
+       << endl;
   return;
 }
 
 void MenuState::render(Menu &menu) {
   cout << "==== " << this->title << " ====" << endl;
 
-  if (MenuModeManager::mode == MenuMode::control) {
+  MenuOptions options = menu.getOptions();
+  if (options.getShowFilters()) {
     this->printControlsHelp();
   }
 
-  for (unsigned int i = 0; i < options.size(); i++) {
+  if (MenuModeManager::mode == MenuMode::control && options.getShowControls()) {
+    this->printControlsHelp();
+  }
+
+  for (unsigned int i = 0; i < this->options.size(); i++) {
     if (i == menu.getChoice()) {
-      cout << " > " << options[i] << " < " << endl;
+      cout << " > " << this->options[i] << " < " << endl;
     } else {
-      cout << "   " << options[i] << "   " << endl;
+      cout << "   " << this->options[i] << "   " << endl;
     }
   }
 
@@ -164,7 +175,7 @@ CountrySelectionMenu::CountrySelectionMenu() {
 }
 
 void CountrySelectionMenu::render(Menu &menu) {
-  if (options.size()) {
+  if (options.size() == 0) {
     cout << "Invalid countries size" << endl;
   }
 
@@ -172,38 +183,34 @@ void CountrySelectionMenu::render(Menu &menu) {
     cout << "1. " << options[0] << endl;
   }
 
-  for (unsigned int i = 1; i < options.size(); i++) {
-    if (menu.getChoice() == i) {
-      if (i % 2 == 1) {
-        cout << i << ". " << options[i - 1] << " | " << " > " << (i + 1) << ". "
-             << options[i] << " < " << endl;
-
-        continue;
-      }
-
-      cout << " > " << i << ". " << options[i - 1] << " < " << " | " << (i + 1)
-           << ". " << options[i] << endl;
+  for (unsigned int i = 0; i < options.size() - 1; i += 2) {
+    if (menu.getChoice() == i + 1) {
+      cout << i + 1 << ". " << options[i] << " | " << " > " << (i + 2) << ". "
+           << options[i + 1] << " < " << endl;
+    } else if (menu.getChoice() == i) {
+      cout << " > " << i + 1 << ". " << options[i] << " < " << " | " << (i + 2)
+           << ". " << options[i + 1] << endl;
     } else {
-      cout << i << ". " << options[i - 1] << " | " << (i + 1) << ". "
-           << options[i] << endl;
+      cout << i + 1 << ". " << options[i] << " | " << (i + 2) << ". "
+           << options[i + 1] << endl;
     }
   }
 
   return;
 }
 
-
-void FilterMenu::printControlsHelp() {
-    MenuState::printControlsHelp();
-}
+void FilterMenu::printControlsHelp() { MenuState::printControlsHelp(); }
 
 void CountrySelectionMenu::handleChoice(Menu &menu,
                                         const unsigned int &optionIndex) {
+
   if (optionIndex >= options.size()) {
     cout << "Invalid choice! Please select a number between 1 and "
          << this->options.size() << "." << endl;
     return;
   }
+
+  stringToLocationsMap.at(options[optionIndex]);
 }
 
 void CountrySelectionMenu::printControlsHelp() {
@@ -213,7 +220,7 @@ void CountrySelectionMenu::printControlsHelp() {
 vector<string> CountrySelectionMenu::countries() {
   vector<string> countries{};
 
-  for (const pair<string, EULocation> &locationPair : locationsMap) {
+  for (const pair<string, EULocation> &locationPair : stringToLocationsMap) {
     if (locationPair.second == EULocation::uknown) {
       continue;
     }
@@ -232,28 +239,34 @@ FilterMenu::FilterMenu() {
 
 void FilterMenu::render(Menu &menu) {
   cout << "==== " << this->title << " ====" << endl;
+
+  TemperatureMenuDataTransfer parser = menu.getParser();
+  const vector<FilterDTO<string>> &filters = parser.getFilters();
+
+  for (unsigned int i = 0; i < filters.size(); i++) {
+    const FilterDTO<string> &filter = filters[i];
+    cout << i + 1 << ". " << filtersMap.at(filter.type) << ": " << filter.value
+         << endl;
+  }
+
+  MenuOptions options = menu.getOptions();
+
   cout << "==== " << "Select Filter to Edit it." << " ====" << endl;
 
-  if (MenuModeManager::mode == MenuMode::control) {
+  if (MenuModeManager::mode == MenuMode::control && options.getShowControls()) {
     this->printControlsHelp();
   }
 
-  for (unsigned int i = 0; i < options.size(); i++) {
+  for (unsigned int i = 0; i < this->options.size(); i++) {
     if (i == menu.getChoice()) {
-      cout << " > " << options[i] << " < " << endl;
+      cout << " > " << this->options[i] << " < " << endl;
     } else {
-      cout << "   " << options[i] << "   " << endl;
+      cout << "   " << this->options[i] << "   " << endl;
     }
   }
 
   return;
 }
-
-void FilterMenu::setFiltersView(const vector<FilterDTO<string>> &filtersView) {
-  this->filtersView = filtersView;
-}
-
-vector<FilterDTO<string>> FilterMenu::getFiltersView() { return filtersView; }
 
 vector<string> FilterMenu::generateFilters() {
   vector<string> options{};
@@ -266,7 +279,6 @@ vector<string> FilterMenu::generateFilters() {
     ++i;
   }
 
-  setFiltersView(filtersView);
   options.emplace_back(to_string(i) + ". Back");
 
   return options;
@@ -278,11 +290,18 @@ void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
          << this->options.size() << "." << endl;
     return;
   }
-  vector<FilterDTO<string>> filtersView = getFiltersView();
+
+  TemperatureMenuDataTransfer parser = menu.getParser();
+
+  vector<FilterDTO<string>> filtersView = parser.getFilters();
+
+  if (filtersView[optionIndex].type == FilterType::location) {
+    menu.changeState(new CountrySelectionMenu());
+  }
 
   if (options.size() == optionIndex + 1) {
-      menu.changeState(new FilterMenu());
-      return;
+    menu.changeState(new GraphMenu());
+    return;
   }
 
   MenuModeManager::inputMode();
@@ -295,7 +314,6 @@ void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
 
   filtersView[optionIndex].value = value;
 
-  TemperatureMenuDataTransfer parser = menu.getParser();
   vector<FilterDTO<string>> filters = parser.getFilters();
 
   for (unsigned int i = 0; i < filters.size(); i++) {

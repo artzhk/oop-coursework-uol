@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../ui/menu/menu.h"
 #include "../ui/graph/graph.h"
-#include "./candlestick.h"
+#include "../ui/menu/menu.h"
 
 class Core {
 private:
@@ -10,10 +9,10 @@ private:
   unique_ptr<Graph> graph;
 
 public:
-  Core(Menu &_menu, Graph &_graph) : menu(unique_ptr<Menu>(&_menu)), graph(unique_ptr<Graph>(&_graph)) {};
+  Core(Menu &_menu, Graph &_graph)
+      : menu(unique_ptr<Menu>(&_menu)), graph(unique_ptr<Graph>(&_graph)) {};
   void run_menu();
 };
-
 
 class Application {
 private:

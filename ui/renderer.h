@@ -2,32 +2,41 @@
 
 using namespace std;
 
-class IRenderable {
+class RenderPoint {
 public:
-  virtual void render(vector<vector<char>> &grid) = 0;
+  int x;
+  int y;
+  char symbol;
+  RenderPoint(int _x, int _y, char _symbol) : x(_x), y(_y), symbol(_symbol) {}
 };
 
 class Canvas {
+public:
+  Canvas();
+  vector<vector<char>> &getGrid() { return this->grid; }
+  int getWidth() const { return width; }
+  int getHeight() const { return height; }
+
 private:
   int width;
   int height;
   vector<vector<char>> grid;
+};
 
+class IRenderable {
 public:
-  Canvas();
-  void rescale();
-  vector<vector<char>> *get_grid() { return &this->grid; }
-  int get_width() const { return width; }
-  int get_height() const { return height; }
+  virtual vector<RenderPoint> render(const Canvas &canvas) const = 0;
+  virtual ~IRenderable() = default;
 };
 
 class Renderer {
+public:
+  Renderer(Canvas _canvas);
+  void render(const vector<IRenderable*> &renderables);
+  const Canvas &getCanvas() const { return canvas; }
+
 private:
   vector<IRenderable> renderables;
   Canvas canvas;
-  void render();
-
-public:
-  Renderer(Canvas _canvas, vector<IRenderable> _renderables);
-  void add_renderable(IRenderable renderable);
+  vector<vector<char>> modifyGrid(const vector<RenderPoint> &renderPoints);
 };

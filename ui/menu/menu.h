@@ -5,15 +5,11 @@
 
 #include <memory>
 #include <mutex>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
 using namespace std;
-
-// class GraphMenu;
-// class CountrySelectionMenu;
-// class FilterMenu;
-// class WeatherPredictionMenu;
 
 // TODO: Ootputs this variables as unique single instance in menu and read them
 // in the core
@@ -48,8 +44,8 @@ public:
 
 class TemperatureMenuDataTransfer {
 public:
-  TemperatureMenuDataTransfer()
-      : graphParameters(new GraphParametersDTO()), filters(new vector<FilterDTO<string>>()) {};
+  TemperatureMenuDataTransfer(GraphParametersDTO *_graphParameters,
+                              vector<FilterDTO<string>> *_filters);
 
   void setGraphParameters(const GraphParametersDTO &_graphParameters);
   const GraphParametersDTO &getGraphParameters();
@@ -62,6 +58,20 @@ private:
   shared_ptr<vector<FilterDTO<string>>> filters;
 };
 
+class MenuOptions {
+public:
+  MenuOptions(bool _showControls, bool _showFilters) : showControls(_showControls), showFilters(_showFilters) {};
+
+  void setOptions(bool *showControls, bool *showFilters);
+
+  const bool &getShowControls();
+  const bool &getShowFilters();
+
+private:
+  bool showControls;
+  bool showFilters;
+};
+
 class Menu {
   friend class MenuState;
 
@@ -70,7 +80,8 @@ public:
   ~Menu();
   void operator=(const Menu &) = delete;
 
-  static Menu *getInstance(const TemperatureMenuDataTransfer &_parser);
+  static Menu *getInstance(const TemperatureMenuDataTransfer &_parser,
+                           const MenuOptions &_options);
   void changeState(MenuState *_state);
 
   void setChoice(const unsigned int &value);
@@ -87,10 +98,13 @@ public:
   void setParser(TemperatureMenuDataTransfer &_parser);
   const TemperatureMenuDataTransfer &getParser();
 
+  void setOptions(const MenuOptions &_parser);
+  const MenuOptions &getOptions();
+
   void run();
 
 private:
-  Menu(const TemperatureMenuDataTransfer &_parser);
+  Menu(const TemperatureMenuDataTransfer &_parser, const MenuOptions &_options);
 
   static Menu *instance;
   // thread-safety
@@ -99,5 +113,6 @@ private:
 
   unique_ptr<MenuState> state;
   unique_ptr<ExternalCoreEvents> coreEvents;
+  unique_ptr<MenuOptions> options;
   shared_ptr<TemperatureMenuDataTransfer> parser;
 };

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -39,17 +38,13 @@ enum EULocation {
   uknown = 255,
 };
 
-static const unordered_map<string, EULocation> locationsMap = {
-    {"at", EULocation::at}, {"be", EULocation::be}, {"bg", EULocation::bg},
-    {"ch", EULocation::ch}, {"cz", EULocation::cz}, {"de", EULocation::de},
-    {"dk", EULocation::dk}, {"ee", EULocation::ee}, {"es", EULocation::es},
-    {"fi", EULocation::fi}, {"fr", EULocation::fr}, {"gb", EULocation::gb},
-    {"gr", EULocation::gr}, {"hr", EULocation::hr}, {"hu", EULocation::hu},
-    {"ie", EULocation::ie}, {"it", EULocation::it}, {"lt", EULocation::lt},
-    {"lu", EULocation::lu}, {"lv", EULocation::lv}, {"nl", EULocation::nl},
-    {"no", EULocation::no}, {"pl", EULocation::pl}, {"pt", EULocation::pt},
-    {"ro", EULocation::ro}, {"se", EULocation::se}, {"si", EULocation::si},
-    {"sk", EULocation::sk}};
+extern const std::unordered_map<string, EULocation> stringToLocationsMap;
+
+class LocationEnumProcessor {
+public:
+  static string locationToString(EULocation location);
+  static EULocation stringToLocation(const std::string &country);
+};
 
 class TemperaturePoint {
 public:
@@ -68,17 +63,16 @@ private:
 class TemperaturePointsState {
 public:
   TemperaturePointsState(const vector<TemperaturePoint> &_points)
-      : points(unique_ptr<vector<TemperaturePoint>>(
-            new vector<TemperaturePoint>(_points))) {};
+      : points(vector<TemperaturePoint>(_points)) {};
+
   void setData(const vector<TemperaturePoint> &_points);
   const vector<TemperaturePoint> &getData();
 
 private:
-  unique_ptr<vector<TemperaturePoint>> points;
+  vector<TemperaturePoint> points;
 };
 
 class TemparatureDataExtractor {
 public:
-  TemparatureDataExtractor();
   static vector<TemperaturePoint> getTemperatures(const string &path);
 };
