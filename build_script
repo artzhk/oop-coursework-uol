@@ -1,1 +1,0 @@
-g++ $(cat ./compile_flags.txt) -o ./build/build.o
