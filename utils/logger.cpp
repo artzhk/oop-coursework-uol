@@ -11,17 +11,6 @@ Logger *Logger::getInstance(EnvType env) {
   return instance;
 }
 
-void Logger::log(const vector<IStringable *> &collection) {
-  if (env == EnvType::PROD) {
-    return;
-  }
-
-  for (unsigned int i = 0; i < collection.size(); i++) {
-    cout << "LOG COLLECTION:" << "EL NO. " << i << ". " << collection[i]->toString()
-         << endl;
-  }
-}
-
 void Logger::log(const string &message) {
   if (env == EnvType::PROD) {
     return;

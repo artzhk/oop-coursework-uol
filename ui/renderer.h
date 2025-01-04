@@ -34,6 +34,7 @@ public:
   Renderer(Canvas _canvas);
   void render(const vector<IRenderable*> &renderables);
   const Canvas &getCanvas() const { return canvas; }
+  void clearCanvas();
 
 private:
   vector<IRenderable> renderables;

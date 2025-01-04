@@ -1,5 +1,4 @@
 #include <mutex>
-#include "../core/stringable.h"
 
 using namespace std;
 
@@ -16,7 +15,6 @@ public:
 
 
   void log(const string &message);
-  void log(const vector<IStringable*> &collection);
 
 private:
   explicit Logger(EnvType _env) : env(_env) {};

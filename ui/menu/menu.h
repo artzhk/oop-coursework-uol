@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../core/order.h"
 #include "states/menu_state.h"
 
 #include <memory>
@@ -23,12 +22,18 @@ public:
 
 class GraphParametersDTO {
 public:
-  GraphParametersDTO() : scale(0) {};
-  void setScale(const unsigned int &_scale);
-  unsigned int getScale();
+  GraphParametersDTO(u_int _xElements, u_int _yElements)
+      : xElements(_xElements), yElements(_yElements) {};
+
+  u_int getXElements() { return xElements; }
+  void setXElements(u_int _xElements) { xElements = _xElements; }
+
+  u_int getYElements() { return yElements; }
+  void setYElements(u_int _yElements) { yElements = _yElements; }
 
 private:
-  unsigned int scale;
+  u_int xElements;
+  u_int yElements;
 };
 
 enum FilterType { timeRange, location };
@@ -48,10 +53,10 @@ public:
                               vector<FilterDTO<string>> *_filters);
 
   void setGraphParameters(const GraphParametersDTO &_graphParameters);
-  const GraphParametersDTO &getGraphParameters();
+  const GraphParametersDTO &getGraphParameters() const;
 
   void setFilters(const vector<FilterDTO<string>> &_filters);
-  const vector<FilterDTO<string>> &getFilters();
+  const vector<FilterDTO<string>> &getFilters() const;
 
 private:
   shared_ptr<GraphParametersDTO> graphParameters;
@@ -60,7 +65,8 @@ private:
 
 class MenuOptions {
 public:
-  MenuOptions(bool _showControls, bool _showFilters) : showControls(_showControls), showFilters(_showFilters) {};
+  MenuOptions(bool _showControls, bool _showFilters)
+      : showControls(_showControls), showFilters(_showFilters) {};
 
   void setOptions(bool *showControls, bool *showFilters);
 

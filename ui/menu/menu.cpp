@@ -150,7 +150,7 @@ TemperatureMenuDataTransfer::TemperatureMenuDataTransfer(
     this->graphParameters = shared_ptr<GraphParametersDTO>(_graphParameters);
   } else {
     this->graphParameters =
-        shared_ptr<GraphParametersDTO>(new GraphParametersDTO());
+        shared_ptr<GraphParametersDTO>(new GraphParametersDTO(10, 10));
   }
 
   if (_filters) {
@@ -169,34 +169,20 @@ TemperatureMenuDataTransfer::TemperatureMenuDataTransfer(
 
 void TemperatureMenuDataTransfer::setFilters(
     const vector<FilterDTO<string>> &_filters) {
-  this->filters = shared_ptr<vector<FilterDTO<string>>>(
-      new vector<FilterDTO<string>>(_filters));
+  *this->filters = _filters;
 }
 
-const vector<FilterDTO<string>> &TemperatureMenuDataTransfer::getFilters() {
+const vector<FilterDTO<string>> &
+TemperatureMenuDataTransfer::getFilters() const {
   return *this->filters;
 }
-
-void GraphParametersDTO::setScale(const unsigned int &_scale) {
-  this->scale = _scale;
-}
-
-unsigned int GraphParametersDTO::getScale() { return this->scale; }
 
 void TemperatureMenuDataTransfer::setGraphParameters(
     const GraphParametersDTO &_graphParameters) {
   *this->graphParameters = _graphParameters;
 }
 
-const GraphParametersDTO &TemperatureMenuDataTransfer::getGraphParameters() {
+const GraphParametersDTO &
+TemperatureMenuDataTransfer::getGraphParameters() const {
   return *this->graphParameters;
 }
-
-// int main() {
-//   TemperatureMenuDataTransfer *parser = new TemperatureMenuDataTransfer();
-//   Menu *menu = Menu::getInstance(*parser);
-
-//   while (1) {
-//       menu->run();
-//   };
-// }

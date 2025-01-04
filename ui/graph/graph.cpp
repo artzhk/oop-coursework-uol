@@ -27,35 +27,33 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
 
   int width = canvas.getWidth();
   int height = canvas.getHeight();
-  auto *logger = Logger::getInstance(EnvType::DEV);
+
+  u_int xElementsAmount = this->graphParameters->getXElements();
+  u_int yElementsAmount = this->graphParameters->getYElements();
+
+  auto *logger = Logger::getInstance(EnvType::PROD);
   u_int size = this->candlesticks.size();
 
-  u_int pagination = 8;
-
-  int ySteps = floor(height / 10);
-  int xSteps = floor(width / pagination);
+  int ySteps = floor(height / yElementsAmount);
+  int xSteps = floor(width / xElementsAmount);
 
   vector<Candlestick> paginatedCandlesticks = vector<Candlestick>{
-      this->candlesticks.begin(), this->candlesticks.begin() + pagination};
-
-  logger->log("Candlesticks high: " + to_string(paginatedCandlesticks[1].high));
-  logger->log("Candlesticks low: " + to_string(paginatedCandlesticks[1].low));
-  logger->log("Candlesticks open: " + to_string(paginatedCandlesticks[1].open));
+      this->candlesticks.begin(), this->candlesticks.begin() + xElementsAmount};
 
   float min = CandlestickProcessor::getLowest(paginatedCandlesticks);
   float max = CandlestickProcessor::getHighest(paginatedCandlesticks);
   float diff = max - min;
 
-  float tempStep = float(diff / 10);
-
   logger->log("Min: " + to_string(min));
   logger->log("Max: " + to_string(max));
 
+  float tempStep = float(diff / yElementsAmount);
+
   for (int i = 1; i * xSteps < width && i < paginatedCandlesticks.size(); ++i) {
-    const Candlestick &candlestick = paginatedCandlesticks[i];
+    const Candlestick &candlestick = paginatedCandlesticks[i - 1];
 
     for (int j = 0; j < floor(candlestick.date.size() - 7); ++j) {
-      renderPoints.emplace_back((i * xSteps) + j, floor(height / 2) - 1,
+      renderPoints.emplace_back((i * xSteps) + j + 1, floor(height / 2) - 1,
                                 candlestick.date[j]);
     }
   }
@@ -66,12 +64,12 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
     int exp = floor(log10f(tempStep));
     int multiplyFactor = 1;
 
-    if (exp < 0 || exp > 1) {
+    if (exp < 0 || exp >= 2) {
       multiplyFactor = powf(10, abs(exp));
     }
 
     string temp =
-        string(to_string(((tempStep * i) + min) * multiplyFactor).substr(0, 4));
+        string(to_string(((tempStep * i) + min) * multiplyFactor).substr(0, 5));
     if (exp != 0) {
       temp = temp + "e" + to_string(exp);
     }
@@ -83,29 +81,32 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
   }
 
   for (int i = 1; i < paginatedCandlesticks.size(); ++i) {
-    const Candlestick &candlestick = paginatedCandlesticks[i];
+    const Candlestick &candlestick = paginatedCandlesticks[i - 1];
 
-    int open = floor(abs((candlestick.open - max) * height) / diff);
-    int close = floor(abs((candlestick.close - max) * height) / diff);
-    int high = floor(abs((candlestick.high - max) * height) / diff);
-    int low = floor(abs((candlestick.low - max) * height) / diff);
+    int open = floor(abs((candlestick.open - min) * height) / diff);
+    int close = floor(abs((candlestick.close - min) * height) / diff);
+    int high = floor(abs((candlestick.high - min) * height) / diff);
+    int low = floor(abs((candlestick.low - min) * height) / diff);
 
-    logger->log("Candlestick " + to_string(i));
+    for (int j = 0; j < abs(high - low); ++j) {
+      if (high > low) {
+        renderPoints.emplace_back(i * xSteps, low + j, '|');
+      } else {
+        renderPoints.emplace_back(i * xSteps, high + j, '|');
+      }
+    }
 
-    // logger->log("Open: " + to_string(candlestick.open));
-    // logger->log("Open int: " + to_string(open));
-    // logger->log("Close: " + to_string(candlestick.close));
-    // logger->log("Close int: " + to_string(close));
-    // logger->log("High: " + to_string(candlestick.high));
-    // logger->log("High int: " + to_string(high));
-    // logger->log("Low: " + to_string(candlestick.low));
-    // logger->log("Low int: " + to_string(low));
+    for (int j = 0; j < abs(open - close); ++j) {
+      if (open > close) {
+        renderPoints.emplace_back(i * xSteps, close + j, '#');
+      } else {
+        renderPoints.emplace_back(i * xSteps, open + j, '#');
+      }
+    }
 
-
-    renderPoints.emplace_back(i * xSteps, open, 'O');
-    renderPoints.emplace_back(i * xSteps, close, 'C');
-    renderPoints.emplace_back(i * xSteps, high, 'H');
-    renderPoints.emplace_back(i * xSteps, low, 'L');
+    if (open == close) {
+      renderPoints.emplace_back(i * xSteps, close, '#');
+    }
   }
 
   return renderPoints;
@@ -116,11 +117,11 @@ vector<RenderPoint> Graph::renderAxes(const Canvas &canvas) const {
 
   int width = canvas.getWidth();
   int height = canvas.getHeight();
-  auto *logger = Logger::getInstance(EnvType::DEV);
+  auto *logger = Logger::getInstance(EnvType::PROD);
   u_int size = this->candlesticks.size();
 
-  int ySteps = floor(height / 10);
-  int xSteps = floor(width / 8);
+  int ySteps = floor(height / this->graphParameters->getYElements());
+  int xSteps = floor(width / this->graphParameters->getXElements());
 
   for (int i = Y_THRESHOLD; i < width; ++i) {
     if (i % xSteps == 0) {
@@ -134,7 +135,7 @@ vector<RenderPoint> Graph::renderAxes(const Canvas &canvas) const {
     }
   }
 
-  for (int i = 0; i < height; ++i) {
+  for (int i = 0; i < height + Y_THRESHOLD; ++i) {
     if (i == height - 1) {
       renderPoints.emplace_back(Y_THRESHOLD, i, '^');
       continue;

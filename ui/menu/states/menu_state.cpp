@@ -1,5 +1,6 @@
 #include "menu_state.h"
 #include "../../../core/temperature_point.h"
+#include "../../../utils/logger.h"
 #include "../../../utils/terminalTextStyles.h"
 #include "../menu.h"
 
@@ -9,6 +10,8 @@
 #include <termios.h>
 #include <unistd.h>
 #include <utility>
+
+using namespace terminalTextStyles;
 
 MenuMode MenuModeManager::mode = MenuMode::input;
 struct termios MenuModeManager::oldt, MenuModeManager::newt;
@@ -47,10 +50,6 @@ void MenuState::printControlsHelp() {
   cout << "Controls: " << endl;
   cout << "  - Type " << BOLD << "\"Shift + i\"" << RESET
        << "to hide this help. " << endl;
-  cout << "  - Type " << BOLD << "\"Shift + g\"" << RESET
-       << " to display graph. " << endl;
-  cout << "  - Type " << BOLD << "\"Shift + f\"" << RESET
-       << " to display filters. " << endl;
   cout << "  - Use the arrow keys to navigate the menu." << endl;
   cout << "  - Or use " << BOLD << "j, k, h, l " << RESET
        << "to navigate the menu." << endl;
@@ -89,13 +88,6 @@ void MenuState::handleChoice(Menu &menu, const unsigned int &optionIndex) {
        << this->options.size() << "." << endl;
   return;
 }
-
-// void MenuState::displayInputField(Menu &menu) {
-//   cout << "Input the value" << endl;
-//   MenuModeManager::inputMode();
-
-//   return;
-// }
 
 MainMenu::MainMenu() {
   title = "Main Menu";
@@ -149,7 +141,7 @@ void GraphMenu::render(Menu &menu) {
 
 void GraphMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   if (optionIndex + 1 == 1) {
-    menu.changeState(new MainMenu());
+    menu.changeState(new GraphSettingsMenu());
   } else if (optionIndex + 1 == 2) {
     menu.changeState(new FilterMenu());
   } else if (optionIndex + 1 == 3) {
@@ -167,9 +159,82 @@ void GraphMenu::printControlsHelp() {
   return;
 }
 
+GraphSettingsMenu::GraphSettingsMenu() {
+  title = "Graph Settings Menu\nSelect the graph setting you want "
+          "to change";
+  options = {"1. Change amount of element on X axis",
+             "2. Change amount of element on Y axis", "3. Back"};
+  MenuModeManager::controlMode();
+}
+
+void GraphSettingsMenu::render(Menu &menu) {
+  displayGraphSettings(menu);
+  MenuState::render(menu);
+  return;
+}
+
+void GraphSettingsMenu::handleInput(u_int &value) {
+  cout << "Enter the value" << endl;
+  string input;
+  MenuModeManager::inputMode();
+
+  cin >> input;
+
+  try {
+    stoi(input);
+  } catch (const invalid_argument &e) {
+    cout << "Invalid input! Please enter a number." << endl;
+    return;
+  }
+
+  value = stoi(input);
+  MenuModeManager::controlMode();
+  return;
+}
+
+void GraphSettingsMenu::displayGraphSettings(Menu &menu) {
+  GraphParametersDTO parameters = menu.getParser().getGraphParameters();
+
+  cout << "Graph settings" << endl;
+  cout << "Amount of X axis elements: " << parameters.getXElements() << endl;
+  cout << "Amount of Y axis elements: " << parameters.getYElements() << endl;
+
+  return;
+}
+
+void GraphSettingsMenu::handleChoice(Menu &menu,
+                                     const unsigned int &optionIndex) {
+  TemperatureMenuDataTransfer parser = menu.getParser();
+  GraphParametersDTO parameters = menu.getParser().getGraphParameters();
+
+  if (optionIndex + 1 == 1) {
+    cout << "Change the amount of elements on the X axis" << endl;
+    u_int xElements;
+    handleInput(xElements);
+    parameters.setXElements(xElements + 1);
+  } else if (optionIndex + 1 == 2) {
+    cout << "Enter the amount of elements on the Y axis" << endl;
+    u_int yElements;
+    handleInput(yElements);
+    parameters.setYElements(yElements);
+  } else if (optionIndex + 1 == 3) {
+    menu.changeState(new GraphMenu());
+  } else {
+    cout << "Invalid choice! Please select a number between 1 and "
+         << this->options.size() << "." << endl;
+  }
+
+  parser.setGraphParameters(parameters);
+  menu.setParser(parser);
+}
+
+void GraphSettingsMenu::printControlsHelp() {
+  MenuState::printControlsHelp();
+  return;
+}
+
 CountrySelectionMenu::CountrySelectionMenu() {
   title = "Select Country";
-  // convert enum values to the vector of string
   options = countries();
   MenuModeManager::controlMode();
 }
@@ -203,14 +268,26 @@ void FilterMenu::printControlsHelp() { MenuState::printControlsHelp(); }
 
 void CountrySelectionMenu::handleChoice(Menu &menu,
                                         const unsigned int &optionIndex) {
-
   if (optionIndex >= options.size()) {
     cout << "Invalid choice! Please select a number between 1 and "
          << this->options.size() << "." << endl;
     return;
   }
 
-  stringToLocationsMap.at(options[optionIndex]);
+  TemperatureMenuDataTransfer parser = menu.getParser();
+  vector<FilterDTO<string>> filters = parser.getFilters();
+  auto *logger = Logger::getInstance(EnvType::PROD);
+
+  for (FilterDTO<string> &filter : filters) {
+    if (filter.type == FilterType::location) {
+      filter.value = options[optionIndex];
+    }
+  }
+
+  parser.setFilters(filters);
+  menu.setParser(parser);
+
+  menu.changeState(new FilterMenu());
 }
 
 void CountrySelectionMenu::printControlsHelp() {
@@ -270,18 +347,41 @@ void FilterMenu::render(Menu &menu) {
 
 vector<string> FilterMenu::generateFilters() {
   vector<string> options{};
-  vector<FilterDTO<string>> filtersView{};
 
   unsigned int i = 1;
   for (const pair<FilterType, string> &filterPair : filtersMap) {
     options.emplace_back(to_string(i) + ". " + filterPair.second);
-    filtersView.emplace_back(FilterDTO<string>("", filterPair.first));
     ++i;
   }
 
   options.emplace_back(to_string(i) + ". Back");
 
   return options;
+}
+
+void FilterMenu::handleDateInput(string &value) {
+  const string templateString = "YYYY-MM-DDTHH:MM:SSZ|YYYY-MM-DDTHH:MM:SSZ";
+
+  cout << "Enter the value for the filter: " << endl;
+  cout << "Enter the date in the format \n" << templateString << endl;
+  string input;
+  MenuModeManager::inputMode();
+  cin >> input;
+
+  if (input.size() != templateString.size()) {
+    cout << "Invalid string size format! Please enter a date in the format."
+         << endl;
+    return;
+  }
+
+  if (input[10] != 'T' || input[19] != 'Z' || input[20] != '|') {
+    cout << "Invalid date format! Please enter a date in the format." << endl;
+    return;
+  }
+
+  value = input;
+
+  return;
 }
 
 void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
@@ -292,11 +392,11 @@ void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   }
 
   TemperatureMenuDataTransfer parser = menu.getParser();
+  vector<FilterDTO<string>> filters = parser.getFilters();
 
-  vector<FilterDTO<string>> filtersView = parser.getFilters();
-
-  if (filtersView[optionIndex].type == FilterType::location) {
+  if (filters[optionIndex].type == FilterType::location) {
     menu.changeState(new CountrySelectionMenu());
+    return;
   }
 
   if (options.size() == optionIndex + 1) {
@@ -304,29 +404,21 @@ void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
     return;
   }
 
-  MenuModeManager::inputMode();
-
-  cout << "Enter the value for the filter: "
-       << filtersMap.at(filtersView[optionIndex].type) << endl;
-
   string value;
-  cin >> value;
+  handleDateInput(value);
 
-  filtersView[optionIndex].value = value;
+  MenuModeManager::controlMode();
 
-  vector<FilterDTO<string>> filters = parser.getFilters();
-
-  for (unsigned int i = 0; i < filters.size(); i++) {
-    if (filters[i].type == filtersView[optionIndex].type) {
-      filters[i].value = filtersView[optionIndex].value;
-      break;
+  for (FilterDTO<string> &filter : filters) {
+    if (filter.type == FilterType::timeRange) {
+      filter.value = value;
     }
   }
 
   parser.setFilters(filters);
   menu.setParser(parser);
 
-  MenuModeManager::controlMode();
+  menu.changeState(new FilterMenu());
 
   return;
 }

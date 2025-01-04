@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 
+#include "../ui/menu/menu.h"
 #include "./temperature_point.h"
 
 using namespace std;
@@ -17,9 +18,30 @@ public:
       : date(_date), open(_open), high(_high), low(_low), close(_close) {}
 };
 
+class DateInterval {
+public:
+  string start;
+  string end;
+  DateInterval(string _start, string _end) : start(_start), end(_end) {}
+};
+
 class CandlestickDataExtractor {
 public:
-  static vector<Candlestick> getCandlesticks(const vector<TemperaturePoint> &points, unsigned int hoursStep = 24, EULocation location = EULocation::de);
+  static vector<Candlestick>
+  getCandlesticks(const vector<TemperaturePoint> &points,
+                  const vector<FilterDTO<string>> &filters,
+                  unsigned int hoursStep = 24);
+
+  static vector<Candlestick>
+  getCandlesticks(const vector<TemperaturePoint> &points,
+                  unsigned int hoursStep = 24,
+                  EULocation location = EULocation::de);
+
+private:
+  static vector<TemperaturePoint> filterPoints(const vector<TemperaturePoint> &points, const EULocation &location);
+  static vector<Candlestick>
+  createCandlesticks(const vector<TemperaturePoint> &filteredPoints,
+                     DateInterval *dateInterval, u_int hoursStep);
 };
 
 class CandlestickProcessor {
@@ -28,4 +50,3 @@ public:
   static float getLowest(const vector<Candlestick> &candlesticks);
   static float getHighest(const vector<Candlestick> &candlesticks);
 };
-

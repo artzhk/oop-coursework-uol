@@ -10,12 +10,22 @@ Canvas::Canvas() {
   struct winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   width = w.ws_col;
-  height = floor(w.ws_row * 0.85);
+  height = floor(w.ws_row);
   grid = vector<vector<char>>(height, vector<char>(width, ' '));
 }
 
 vector<RenderPoint> IRenderable::render(const Canvas &canvas) const {
   return vector<RenderPoint>{};
+}
+
+void Renderer::clearCanvas() {
+  vector<vector<char>> &grid = this->canvas.getGrid();
+
+  for (int i = 0; i < grid.size(); ++i) {
+    for (int j = 0; j < grid[i].size(); ++j) {
+      grid[i][j] = ' ';
+    }
+  }
 }
 
 void Renderer::render(const vector<IRenderable *> &renderables) {
@@ -35,7 +45,7 @@ void Renderer::render(const vector<IRenderable *> &renderables) {
 
   const vector<vector<char>> &grid = modifyGrid(renderPoints);
 
-  for (int i = grid.size() - 1; i > 0; --i) {
+  for (int i = grid.size() - 1; i >= 0; --i) {
     for (int j = 0; j < grid[i].size(); ++j) {
       cout << grid[i][j];
     }
@@ -51,7 +61,7 @@ vector<vector<char>>
 Renderer::modifyGrid(const vector<RenderPoint> &renderPoints) {
   vector<vector<char>> &grid = this->canvas.getGrid();
 
-  auto *logger = Logger::getInstance(EnvType::DEV);
+  auto *logger = Logger::getInstance(EnvType::PROD);
 
   for (int i = 0; i < renderPoints.size(); ++i) {
     const int &x = renderPoints[i].x;

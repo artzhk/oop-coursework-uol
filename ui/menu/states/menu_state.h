@@ -5,8 +5,7 @@
 using namespace std;
 
 class Menu;
-template <typename T>
-class FilterDTO;
+template <typename T> class FilterDTO;
 
 enum MenuMode { control, input };
 
@@ -66,19 +65,28 @@ private:
   void printFiltersState();
 };
 
+class GraphSettingsMenu : public MenuState {
+public:
+  GraphSettingsMenu();
+  void render(Menu &menu) override;
+  void handleChoice(Menu &menu, const unsigned int &optionIndex) override;
+
+private:
+  void printControlsHelp() override;
+  void handleInput(u_int &value);
+  void displayGraphSettings(Menu &menu);
+};
+
 class FilterMenu : public MenuState {
 public:
   FilterMenu();
   void render(Menu &menu) override;
   void handleChoice(Menu &menu, const unsigned int &optionIndex) override;
 
-  // void setFiltersView(const vector<FilterDTO<string>> &filtersView);
-  // vector<FilterDTO<string>> getFiltersView();
-
 private:
   void printControlsHelp() override;
+  void handleDateInput(string &value);
   vector<string> generateFilters();
-  // vector<FilterDTO<string>> filtersView;
 };
 
 class CountrySelectionMenu : public MenuState {
