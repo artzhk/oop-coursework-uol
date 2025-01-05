@@ -98,14 +98,14 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
 
     for (int j = 0; j < abs(open - close); ++j) {
       if (open > close) {
-        if (abs(open - close) == j + 1) {
-          renderPoints.emplace_back(i * xSteps, close + j, '^');
+        if (0 == j) {
+          renderPoints.emplace_back(i * xSteps, close + j, 'v');
           continue;
         }
         renderPoints.emplace_back(i * xSteps, close + j, '#');
       } else {
-        if (j == 0) {
-          renderPoints.emplace_back(i * xSteps, open + j, 'v');
+        if (j == abs(open - close) - 1) {
+          renderPoints.emplace_back(i * xSteps, open + j, '^');
           continue;
         }
         renderPoints.emplace_back(i * xSteps, open + j, '#');
