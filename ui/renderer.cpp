@@ -14,6 +14,14 @@ Canvas::Canvas() {
   grid = vector<vector<char>>(height, vector<char>(width, ' '));
 }
 
+void Canvas::resize() {
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  this->width = w.ws_col;
+  this->height = floor(w.ws_row);
+  this->grid = vector<vector<char>>(height, vector<char>(width, ' '));
+}
+
 vector<RenderPoint> IRenderable::render(const Canvas &canvas) const {
   return vector<RenderPoint>{};
 }
@@ -26,6 +34,8 @@ void Renderer::clearCanvas() {
       grid[i][j] = ' ';
     }
   }
+
+  this->canvas.resize();
 }
 
 void Renderer::render(const vector<IRenderable *> &renderables) {

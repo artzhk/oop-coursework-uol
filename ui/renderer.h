@@ -16,6 +16,7 @@ public:
   vector<vector<char>> &getGrid() { return this->grid; }
   int getWidth() const { return width; }
   int getHeight() const { return height; }
+  void resize();
 
 private:
   int width;
