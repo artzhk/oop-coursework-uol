@@ -1,6 +1,6 @@
 #pragma once
 
-#include "states/menu_state.h"
+#include "states/menuState.h"
 
 #include <memory>
 #include <mutex>
@@ -10,8 +10,6 @@
 
 using namespace std;
 
-// TODO: Ootputs this variables as unique single instance in menu and read them
-// in the core
 class ExternalCoreEvents {
 public:
   ExternalCoreEvents(bool _graph, bool _filters)

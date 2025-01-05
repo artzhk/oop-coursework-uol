@@ -1,6 +1,6 @@
 #include "./menu.h"
-#include "../../core/temperature_point.h"
-#include "states/menu_state.h"
+#include "../../core/temperaturePoint.h"
+#include "states/menuState.h"
 #include <iostream>
 #include <memory>
 #include <string>

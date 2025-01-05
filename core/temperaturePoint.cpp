@@ -1,4 +1,4 @@
-#include "./temperature_point.h"
+#include "./temperaturePoint.h"
 #include "../utils/fileReader.h"
 #include "../utils/logger.h"
 #include <cmath>

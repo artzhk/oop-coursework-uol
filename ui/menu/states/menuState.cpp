@@ -1,10 +1,9 @@
-#include "menu_state.h"
-#include "../../../core/temperature_point.h"
+#include "menuState.h"
+#include "../../../core/temperaturePoint.h"
 #include "../../../utils/logger.h"
 #include "../../../utils/terminalTextStyles.h"
 #include "../menu.h"
 
-#include <cmath>
 #include <iostream>
 #include <string>
 #include <termios.h>

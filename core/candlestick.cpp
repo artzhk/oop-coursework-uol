@@ -1,7 +1,7 @@
 #import "candlestick.h"
 #import "../utils/fileReader.h"
 #import "../utils/logger.h"
-#include "temperature_point.h"
+#include "temperaturePoint.h"
 #include <string>
 
 vector<Candlestick> CandlestickDataExtractor::getCandlesticks(

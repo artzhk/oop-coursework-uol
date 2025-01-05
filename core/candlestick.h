@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "../ui/menu/menu.h"
-#include "./temperature_point.h"
+#include "./temperaturePoint.h"
 
 using namespace std;
 
