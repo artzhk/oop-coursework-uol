@@ -1,3 +1,7 @@
 datasets/*
 build/*
 *.*-E
+
+*.mp4
+*.pdf
+
