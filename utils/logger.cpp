@@ -11,12 +11,12 @@ Logger *Logger::getInstance(EnvType env) {
   return instance;
 }
 
-void Logger::log(const string &message) {
+void Logger::log(const std::string &message) {
   if (env == EnvType::PROD) {
     return;
   }
 
-  cout << "LOG: " << message << endl;
+  std::cout << "LOG: " << message << std::endl;
 
   return;
 }

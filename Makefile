@@ -14,6 +14,7 @@ UTILS_DIR = utils
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
+#SRCS = $(wildcard **/*.cpp)
 SRCS = $(wildcard $(CORE_DIR)/*.cpp) \
        $(wildcard $(UTILS_DIR)/*.cpp) \
        $(wildcard $(GRAPH_DIR)/*.cpp) \
@@ -32,8 +33,10 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
-	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR): 
+	mkdir -p $(BUILD_DIR)
 
 clean:
 	rm -rf $(BUILD_DIR)

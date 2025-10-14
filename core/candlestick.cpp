@@ -1,7 +1,6 @@
 #import "candlestick.h"
 #import "../utils/fileReader.h"
 #import "../utils/logger.h"
-#include "temperaturePoint.h"
 #include <string>
 
 vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
@@ -25,7 +24,7 @@ vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
   }
 
   if (dateInterval == nullptr) {
-    throw invalid_argument("Invalid date interval");
+    throw std::errc::invalid_argument;
   }
 
   vector<TemperaturePoint> filteredPoints = filterPoints(points, location);

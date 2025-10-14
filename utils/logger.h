@@ -1,6 +1,5 @@
 #include <mutex>
-
-using namespace std;
+#include <string>
 
 enum class EnvType { DEV, PROD };
 
@@ -14,11 +13,11 @@ public:
   ~Logger() = default;
 
 
-  void log(const string &message);
+  void log(const std::string &message);
 
 private:
   explicit Logger(EnvType _env) : env(_env) {};
-  static mutex mutex_;
+  static std::mutex mutex_;
   static Logger *instance;
 
   EnvType env;

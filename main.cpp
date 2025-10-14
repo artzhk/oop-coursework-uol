@@ -1,15 +1,22 @@
 #include "ui/graph/graph.h"
 #include "ui/menu/menu.h"
 #include "utils/logger.h"
+#include <sys/stat.h>
+#include <unistd.h>
 #include <cstdlib>
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 int main() {
+  // check file exists
+  struct stat buffer;
+  if (stat ("./datasets/weather_data.csv", &buffer) == 0) {
+	  std::cout << "File does not exists" << std::endl;
+	  return -1;
+  }
   GraphParametersDTO graphParameters{10, 10};
-  vector<FilterDTO<string>> filters{
+
+  std::vector<FilterDTO<string>> filters{
       FilterDTO<string>("1980-01-01T00:00:00Z|2019-12-31T23:00:00Z",
                         FilterType::timeRange),
       FilterDTO<string>(LocationEnumProcessor::locationToString(EULocation::de),
@@ -22,15 +29,15 @@ int main() {
   Canvas canvas{};
   Renderer renderer{canvas};
 
-  vector<TemperaturePoint> temperatures{
+  std::vector<TemperaturePoint> temperatures{
       TemparatureDataExtractor::getTemperatures("./datasets/weather_data.csv")};
 
-  vector<Candlestick> candlesticks{
+  std::vector<Candlestick> candlesticks{
       CandlestickDataExtractor::getCandlesticks(temperatures, 24 * 31)};
 
   Graph graph{candlesticks, &graphParameters, &filters};
 
-  const vector<IRenderable *> renderables{&graph};
+  const std::vector<IRenderable *> renderables{&graph};
 
   Menu *menu = Menu::getInstance(parser, options);
 

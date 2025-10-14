@@ -1,7 +1,9 @@
 #include "./temperaturePoint.h"
 #include "../utils/fileReader.h"
 #include "../utils/logger.h"
+#include <algorithm>
 #include <cmath>
+#include <stdexcept>
 #include <string>
 #include <sys/types.h>
 #include <utility>
