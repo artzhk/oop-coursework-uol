@@ -1,6 +1,6 @@
-#include "../../core/candlestick.h"
-#include "../../ui/menu/menu.h"
-#include "../renderer.h"
+#include "candlestick.h"
+#include "menu.h"
+#include "renderer.h"
 
 class Graph : public IRenderable {
 public:

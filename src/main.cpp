@@ -1,19 +1,19 @@
-#include "ui/graph/graph.h"
-#include "ui/menu/menu.h"
-#include "utils/logger.h"
+#include "../include/graph.h"
+#include "../include/menu.h"
+#include "../include/logger.h"
+#include "../include/fileReader.h"
 #include <sys/stat.h>
 #include <unistd.h>
-#include <cstdlib>
 #include <iostream>
 #include <string>
 
 int main() {
-  // check file exists
-  struct stat buffer;
-  if (stat ("./datasets/weather_data.csv", &buffer) == 0) {
+  const std::string name = "./datasets/weather_data.csv";
+  if (!FileReader::exists(name)) {
 	  std::cout << "File does not exists" << std::endl;
 	  return -1;
   }
+
   GraphParametersDTO graphParameters{10, 10};
 
   std::vector<FilterDTO<string>> filters{

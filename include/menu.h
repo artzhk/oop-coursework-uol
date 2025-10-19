@@ -1,6 +1,6 @@
 #pragma once
 
-#include "states/menuState.h"
+#include "menuState.h"
 
 #include <memory>
 #include <mutex>
@@ -46,17 +46,17 @@ public:
 class TemperatureMenuDataTransfer {
 public:
   TemperatureMenuDataTransfer(GraphParametersDTO *_graphParameters,
-                              std::vector<FilterDTO<std::string>> *_filters);
+                              std::vector<FilterDTO<std::string> > *_filters);
 
   void setGraphParameters(const GraphParametersDTO &_graphParameters);
   const GraphParametersDTO &getGraphParameters() const;
 
-  void setFilters(const std::vector<FilterDTO<std::string>> &_filters);
-  const std::vector<FilterDTO<std::string>> &getFilters() const;
+  void setFilters(const std::vector<FilterDTO<std::string> > &_filters);
+  const std::vector<FilterDTO<std::string> > &getFilters() const;
 
 private:
   std::shared_ptr<GraphParametersDTO> graphParameters;
-  std::shared_ptr<std::vector<FilterDTO<std::string>>> filters;
+  std::shared_ptr<std::vector<FilterDTO<std::string> > > filters;
 };
 
 class MenuOptions {

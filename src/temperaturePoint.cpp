@@ -1,6 +1,6 @@
-#include "./temperaturePoint.h"
-#include "../utils/fileReader.h"
-#include "../utils/logger.h"
+#include "../include/temperaturePoint.h"
+#include "../include/fileReader.h"
+#include "../include/logger.h"
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>

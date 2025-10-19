@@ -1,8 +1,8 @@
-#include "menuState.h"
-#include "../../../core/temperaturePoint.h"
-#include "../../../utils/logger.h"
-#include "../../../utils/terminalTextStyles.h"
-#include "../menu.h"
+#include "../../../../include/menuState.h"
+#include "../../../../include/temperaturePoint.h"
+#include "../../../../include/logger.h"
+#include "../../../../include/terminalTextStyles.h"
+#include "../../../../include/menu.h"
 
 #include <iostream>
 #include <string>

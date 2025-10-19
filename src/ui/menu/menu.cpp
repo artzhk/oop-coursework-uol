@@ -1,6 +1,6 @@
-#include "./menu.h"
-#include "../../core/temperaturePoint.h"
-#include "states/menuState.h"
+#include "../../../include/menu.h"
+#include "../../../include/temperaturePoint.h"
+#include "../../../include/menuState.h"
 #include <iostream>
 #include <memory>
 #include <string>
@@ -32,10 +32,10 @@ const bool &MenuOptions::getShowFilters() { return this->showFilters; }
 Menu::Menu(const TemperatureMenuDataTransfer &_parser,
            const MenuOptions &_options)
     : currentChoice(0), state(new MainMenu()),
-      parser(shared_ptr<TemperatureMenuDataTransfer>(
-          new TemperatureMenuDataTransfer(_parser))),
       coreEvents(new ExternalCoreEvents(false, false)),
-      options(new MenuOptions(_options)) {};
+      options(new MenuOptions(_options)),
+      parser(shared_ptr<TemperatureMenuDataTransfer>(
+          new TemperatureMenuDataTransfer(_parser))) {};
 
 // Menu::~Menu() { delete Menu::instance; }
 Menu::~Menu() = default;
