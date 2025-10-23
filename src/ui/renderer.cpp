@@ -1,6 +1,7 @@
-#include "renderer.h"
-#include "../utils/logger.h"
+#include "../../include/renderer.h"
+#include "../../include/logger.h"
 #include <cmath>
+#include <cstddef>
 #include <iostream>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -29,8 +30,8 @@ vector<RenderPoint> IRenderable::render(const Canvas &canvas) const {
 void Renderer::clearCanvas() {
   vector<vector<char>> &grid = this->canvas.getGrid();
 
-  for (int i = 0; i < grid.size(); ++i) {
-    for (int j = 0; j < grid[i].size(); ++j) {
+  for (std::size_t i = 0; i < grid.size(); ++i) {
+    for (std::size_t j = 0; j < grid[i].size(); ++j) {
       grid[i][j] = ' ';
     }
   }
@@ -42,7 +43,7 @@ void Renderer::render(const vector<IRenderable *> &renderables) {
 
   vector<RenderPoint> renderPoints{};
 
-  for (int i = 0; i < renderables.size(); ++i) {
+  for (unsigned long i = 0; i < renderables.size(); ++i) {
     auto *it = renderables[i];
     if (it == nullptr) {
       continue;
@@ -55,8 +56,8 @@ void Renderer::render(const vector<IRenderable *> &renderables) {
 
   const vector<vector<char>> &grid = modifyGrid(renderPoints);
 
-  for (int i = grid.size() - 1; i >= 0; --i) {
-    for (int j = 0; j < grid[i].size(); ++j) {
+  for (std::size_t i = grid.size() - 1; i >= 0; --i) {
+    for (std::size_t j = 0; j < grid[i].size(); ++j) {
       cout << grid[i][j];
     }
     cout << endl;
@@ -71,14 +72,15 @@ vector<vector<char>>
 Renderer::modifyGrid(const vector<RenderPoint> &renderPoints) {
   vector<vector<char>> &grid = this->canvas.getGrid();
 
-  auto *logger = Logger::getInstance(EnvType::PROD);
+  //auto *logger = Logger::getInstance(EnvType::PROD);
 
-  for (int i = 0; i < renderPoints.size(); ++i) {
+  for (unsigned int i = 0; i < renderPoints.size(); ++i) {
     const int &x = renderPoints[i].x;
     const int &y = renderPoints[i].y;
     const char &symbol = renderPoints[i].symbol;
 
-    if ((y >= 0 && y < grid.size()) && (x >= 0 && x < grid[y].size())) {
+
+    if ((y >= 0 && (std::size_t)y < grid.size()) && (x >= 0 && (std::size_t)x < grid[y].size())) {
       grid[y][x] = symbol;
     }
   }

@@ -1,5 +1,5 @@
-#include "graph.h"
-#include "../../utils/logger.h"
+#include "../../../include/graph.h"
+#include "../../../include/logger.h"
 #include <cmath>
 #include <cstdlib>
 #include <string>
@@ -9,9 +9,6 @@
 #define X_THRESHOLD 8
 
 vector<RenderPoint> Graph::render(const Canvas &canvas) const {
-  int width = canvas.getWidth();
-  int height = canvas.getHeight();
-
   vector<RenderPoint> renderPoints{};
 
   renderPoints = renderAxes(canvas);

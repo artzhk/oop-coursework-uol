@@ -1,14 +1,12 @@
 #pragma once
 
-#include "states/menuState.h"
+#include "menuState.h"
 
 #include <memory>
 #include <mutex>
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-using namespace std;
 
 class ExternalCoreEvents {
 public:
@@ -36,7 +34,7 @@ private:
 
 enum FilterType { timeRange, location };
 
-extern const unordered_map<FilterType, string> filtersMap;
+extern const std::unordered_map<FilterType, std::string> filtersMap;
 
 template <typename T> class FilterDTO {
 public:
@@ -48,17 +46,17 @@ public:
 class TemperatureMenuDataTransfer {
 public:
   TemperatureMenuDataTransfer(GraphParametersDTO *_graphParameters,
-                              vector<FilterDTO<string>> *_filters);
+                              std::vector<FilterDTO<std::string> > *_filters);
 
   void setGraphParameters(const GraphParametersDTO &_graphParameters);
   const GraphParametersDTO &getGraphParameters() const;
 
-  void setFilters(const vector<FilterDTO<string>> &_filters);
-  const vector<FilterDTO<string>> &getFilters() const;
+  void setFilters(const std::vector<FilterDTO<std::string> > &_filters);
+  const std::vector<FilterDTO<std::string> > &getFilters() const;
 
 private:
-  shared_ptr<GraphParametersDTO> graphParameters;
-  shared_ptr<vector<FilterDTO<string>>> filters;
+  std::shared_ptr<GraphParametersDTO> graphParameters;
+  std::shared_ptr<std::vector<FilterDTO<std::string> > > filters;
 };
 
 class MenuOptions {
@@ -112,11 +110,11 @@ private:
 
   static Menu *instance;
   // thread-safety
-  static mutex mutex_;
+  static std::mutex mutex_;
   unsigned int currentChoice;
 
-  unique_ptr<MenuState> state;
-  unique_ptr<ExternalCoreEvents> coreEvents;
-  unique_ptr<MenuOptions> options;
-  shared_ptr<TemperatureMenuDataTransfer> parser;
+  std::unique_ptr<MenuState> state;
+  std::unique_ptr<ExternalCoreEvents> coreEvents;
+  std::unique_ptr<MenuOptions> options;
+  std::shared_ptr<TemperatureMenuDataTransfer> parser;
 };

@@ -1,4 +1,4 @@
-#include "./fileReader.h"
+#include "../../include/fileReader.h"
 #include <fstream>
 #include <iostream>
 
@@ -44,3 +44,7 @@ vector<string> FileReader::tokenise(const string &csv_line, char separator) {
   return tokens;
 }
 
+bool FileReader::exists(const std::string& name) {
+    ifstream f(name.c_str());
+    return f.good();
+}

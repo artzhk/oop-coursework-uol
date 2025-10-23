@@ -1,8 +1,8 @@
 #include <string>
 #include <vector>
 
-#include "../ui/menu/menu.h"
-#include "./temperaturePoint.h"
+#include "menu.h"
+#include "temperaturePoint.h"
 
 using namespace std;
 
@@ -15,7 +15,7 @@ public:
   float low;
 
   Candlestick(string _date, float _open, float _high, float _low, float _close)
-      : date(_date), open(_open), high(_high), low(_low), close(_close) {}
+      : date(_date), open(_open), high(_high), close(_close), low(_low) {}
 };
 
 class DateInterval {
@@ -29,7 +29,7 @@ class CandlestickDataExtractor {
 public:
   static vector<Candlestick>
   getCandlesticks(const vector<TemperaturePoint> &points,
-                  const vector<FilterDTO<string>> &filters,
+                  const vector<FilterDTO<string> > &filters,
                   unsigned int hoursStep = 24);
 
   static vector<Candlestick>

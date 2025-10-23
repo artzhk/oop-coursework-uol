@@ -1,12 +1,11 @@
-#import "candlestick.h"
-#import "../utils/fileReader.h"
-#import "../utils/logger.h"
-#include "temperaturePoint.h"
+#import "../include/candlestick.h"
+#import "../include/fileReader.h"
+#import "../include/logger.h"
 #include <string>
 
 vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
     const vector<TemperaturePoint> &points,
-    const vector<FilterDTO<string>> &filters, unsigned int hoursStep) {
+    const vector<FilterDTO<string> > &filters, unsigned int hoursStep) {
   auto *logger = Logger::getInstance(EnvType::PROD);
 
   EULocation location = EULocation::uknown;
@@ -25,7 +24,7 @@ vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
   }
 
   if (dateInterval == nullptr) {
-    throw invalid_argument("Invalid date interval");
+    throw std::errc::invalid_argument;
   }
 
   vector<TemperaturePoint> filteredPoints = filterPoints(points, location);
@@ -41,12 +40,12 @@ vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
 vector<Candlestick> CandlestickDataExtractor::createCandlesticks(
     const vector<TemperaturePoint> &filteredPoints, DateInterval *dateInterval,
     u_int hoursStep) {
-  vector<Candlestick> candlesticks{};
+  vector<Candlestick> candlesticks {};
 
   for (unsigned int i = 0; i < filteredPoints.size(); i += hoursStep) {
     const TemperaturePoint &point = filteredPoints[i];
     float initial = point.getTemperature();
-    float open;
+    float open = 0.0;
 
     if (open == 0) {
       open = initial;

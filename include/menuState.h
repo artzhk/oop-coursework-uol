@@ -2,8 +2,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 class Menu;
 template <typename T> class FilterDTO;
 
@@ -23,14 +21,14 @@ class MenuState {
 public:
   virtual void render(Menu &menu) = 0;
   virtual void handleChoice(Menu &menu, const unsigned int &optionIndex) = 0;
-  const vector<string> &getOptions() { return options; }
+  const std::vector<std::string> &getOptions() { return options; }
 
   virtual ~MenuState() = default;
 
 protected:
   void setState(Menu &menu, MenuState *state);
-  vector<string> options;
-  string title;
+  std::vector<std::string> options;
+  std::string title;
   virtual void printControlsHelp() = 0;
 };
 
@@ -85,8 +83,8 @@ public:
 
 private:
   void printControlsHelp() override;
-  void handleDateInput(string &value);
-  vector<string> generateFilters();
+  void handleDateInput(std::string &value);
+  std::vector<std::string> generateFilters();
 };
 
 class CountrySelectionMenu : public MenuState {
@@ -98,5 +96,5 @@ public:
 private:
   void printControlsHelp() override;
   void printCountries(Menu &menu);
-  vector<string> countries();
+  std::vector<std::string> countries();
 };
