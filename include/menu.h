@@ -16,47 +16,55 @@ public:
   bool filters;
 };
 
-class GraphParametersDTO {
+// TODO: Options of Graph might be width and height, idk why is it called x,
+// y...
+// @param x u_int
+// @param y u_int
+class GraphParameters {
 public:
-  GraphParametersDTO(u_int _xElements, u_int _yElements)
-      : xElements(_xElements), yElements(_yElements) {};
+  GraphParameters(u_int x, u_int y) : x(x), y(y) {};
 
-  u_int getXElements() { return xElements; }
-  void setXElements(u_int _xElements) { xElements = _xElements; }
+  u_int getX() { return x; }
+  void setX(u_int x) { this->x = x; }
 
-  u_int getYElements() { return yElements; }
-  void setYElements(u_int _yElements) { yElements = _yElements; }
+  u_int getY() { return y; }
+  void setY(u_int y) { this->y = y; }
 
 private:
-  u_int xElements;
-  u_int yElements;
+  u_int x;
+  u_int y;
 };
 
 enum FilterType { timeRange, location };
 
 extern const std::unordered_map<FilterType, std::string> filtersMap;
 
-template <typename T> class FilterDTO {
+template <typename T> class Filter {
 public:
-  FilterDTO(T _value, FilterType _type) : value(_value), type(_type) {};
+  Filter(T _value, FilterType _type) : value(_value), type(_type) {};
   T value;
   FilterType type;
 };
 
+/// TODO: Pls understand what it used for
+/// @param gParams - graph parameters
+/// @param f - vector of filters
 class TemperatureMenuDataTransfer {
 public:
-  TemperatureMenuDataTransfer(GraphParametersDTO *_graphParameters,
-                              std::vector<FilterDTO<std::string> > *_filters);
+  TemperatureMenuDataTransfer(
+      std::shared_ptr<GraphParameters> gParams,
+      std::shared_ptr<std::vector<Filter<std::string>>> f)
+      : graphParameters(gParams), filters(f) {}
 
-  void setGraphParameters(const GraphParametersDTO &_graphParameters);
-  const GraphParametersDTO &getGraphParameters() const;
+  void setGraphParameters(const GraphParameters &_graphParameters);
+  const GraphParameters &getGraphParameters() const;
 
-  void setFilters(const std::vector<FilterDTO<std::string> > &_filters);
-  const std::vector<FilterDTO<std::string> > &getFilters() const;
+  void setFilters(const std::vector<Filter<std::string>> &_filters);
+  const std::vector<Filter<std::string>> &getFilters() const;
 
 private:
-  std::shared_ptr<GraphParametersDTO> graphParameters;
-  std::shared_ptr<std::vector<FilterDTO<std::string> > > filters;
+  std::shared_ptr<GraphParameters> graphParameters;
+  std::shared_ptr<std::vector<Filter<std::string>>> filters;
 };
 
 class MenuOptions {

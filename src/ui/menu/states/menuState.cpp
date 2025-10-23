@@ -1,8 +1,7 @@
 #include "../../../../include/menuState.h"
-#include "../../../../include/temperaturePoint.h"
-#include "../../../../include/logger.h"
-#include "../../../../include/terminalTextStyles.h"
 #include "../../../../include/menu.h"
+#include "../../../../include/temperaturePoint.h"
+#include "../../../../include/terminalTextStyles.h"
 
 #include <iostream>
 #include <string>
@@ -72,7 +71,7 @@ void MenuState::render(Menu &menu) {
   }
 
   for (unsigned int i = 0; i < this->options.size(); i++) {
-    if (i == menu.getChoice()) {
+    if ((int)i == menu.getChoice()) {
       cout << " > " << this->options[i] << " < " << endl;
     } else {
       cout << "   " << this->options[i] << "   " << endl;
@@ -82,11 +81,11 @@ void MenuState::render(Menu &menu) {
   return;
 }
 
-void MenuState::handleChoice(Menu &menu, const unsigned int &optionIndex) {
-  cout << "Invalid choice! Please select a number between 1 and "
-       << this->options.size() << "." << endl;
-  return;
-}
+// void MenuState::handleChoice(Menu &menu, const unsigned int &optionIndex) {
+//   cout << "Invalid choice! Please select a number between 1 and "
+//        << this->options.size() << "." << endl;
+//   return;
+// }
 
 MainMenu::MainMenu() {
   title = "Main Menu";
@@ -192,11 +191,11 @@ void GraphSettingsMenu::handleInput(u_int &value) {
 }
 
 void GraphSettingsMenu::displayGraphSettings(Menu &menu) {
-  GraphParametersDTO parameters = menu.getParser().getGraphParameters();
+  GraphParameters parameters = menu.getParser().getGraphParameters();
 
   cout << "Graph settings" << endl;
-  cout << "Amount of X axis elements: " << parameters.getXElements() << endl;
-  cout << "Amount of Y axis elements: " << parameters.getYElements() << endl;
+  cout << "Amount of X axis elements: " << parameters.getX() << endl;
+  cout << "Amount of Y axis elements: " << parameters.getY() << endl;
 
   return;
 }
@@ -204,18 +203,18 @@ void GraphSettingsMenu::displayGraphSettings(Menu &menu) {
 void GraphSettingsMenu::handleChoice(Menu &menu,
                                      const unsigned int &optionIndex) {
   TemperatureMenuDataTransfer parser = menu.getParser();
-  GraphParametersDTO parameters = menu.getParser().getGraphParameters();
+  GraphParameters parameters = menu.getParser().getGraphParameters();
 
   if (optionIndex + 1 == 1) {
     cout << "Change the amount of elements on the X axis" << endl;
     u_int xElements;
     handleInput(xElements);
-    parameters.setXElements(xElements + 1);
+    parameters.setX(xElements + 1);
   } else if (optionIndex + 1 == 2) {
     cout << "Enter the amount of elements on the Y axis" << endl;
     u_int yElements;
     handleInput(yElements);
-    parameters.setYElements(yElements);
+    parameters.setY(yElements);
   } else if (optionIndex + 1 == 3) {
     menu.changeState(new GraphMenu());
   } else {
@@ -248,10 +247,11 @@ void CountrySelectionMenu::render(Menu &menu) {
   }
 
   for (unsigned int i = 0; i < options.size() - 1; i += 2) {
-    if (menu.getChoice() == i + 1) {
+    std::size_t c = (std::size_t)menu.getChoice();
+    if (c == i + 1) {
       cout << i + 1 << ". " << options[i] << " | " << " > " << (i + 2) << ". "
            << options[i + 1] << " < " << endl;
-    } else if (menu.getChoice() == i) {
+    } else if (c == i) {
       cout << " > " << i + 1 << ". " << options[i] << " < " << " | " << (i + 2)
            << ". " << options[i + 1] << endl;
     } else {
@@ -274,10 +274,9 @@ void CountrySelectionMenu::handleChoice(Menu &menu,
   }
 
   TemperatureMenuDataTransfer parser = menu.getParser();
-  vector<FilterDTO<string>> filters = parser.getFilters();
-  auto *logger = Logger::getInstance(EnvType::PROD);
+  vector<Filter<string>> filters = parser.getFilters();
 
-  for (FilterDTO<string> &filter : filters) {
+  for (Filter<string> &filter : filters) {
     if (filter.type == FilterType::location) {
       filter.value = options[optionIndex];
     }
@@ -296,7 +295,8 @@ void CountrySelectionMenu::printControlsHelp() {
 vector<string> CountrySelectionMenu::countries() {
   vector<string> countries{};
 
-  for (const pair<string, EULocation> &locationPair : stringToLocationsMap) {
+  for (const std::pair<const std::string, EULocation> &locationPair :
+       stringToLocationsMap) {
     if (locationPair.second == EULocation::uknown) {
       continue;
     }
@@ -317,10 +317,10 @@ void FilterMenu::render(Menu &menu) {
   cout << "==== " << this->title << " ====" << endl;
 
   TemperatureMenuDataTransfer parser = menu.getParser();
-  const vector<FilterDTO<string>> &filters = parser.getFilters();
+  const vector<Filter<string>> &filters = parser.getFilters();
 
   for (unsigned int i = 0; i < filters.size(); i++) {
-    const FilterDTO<string> &filter = filters[i];
+    const Filter<string> &filter = filters[i];
     cout << i + 1 << ". " << filtersMap.at(filter.type) << ": " << filter.value
          << endl;
   }
@@ -333,8 +333,8 @@ void FilterMenu::render(Menu &menu) {
     this->printControlsHelp();
   }
 
-  for (unsigned int i = 0; i < this->options.size(); i++) {
-    if (i == menu.getChoice()) {
+  for (std::size_t i = 0; i < this->options.size(); i++) {
+    if (i == (std::size_t)menu.getChoice()) {
       cout << " > " << this->options[i] << " < " << endl;
     } else {
       cout << "   " << this->options[i] << "   " << endl;
@@ -348,7 +348,7 @@ vector<string> FilterMenu::generateFilters() {
   vector<string> options{};
 
   unsigned int i = 1;
-  for (const pair<FilterType, string> &filterPair : filtersMap) {
+  for (const pair<const FilterType, string> &filterPair : filtersMap) {
     options.emplace_back(to_string(i) + ". " + filterPair.second);
     ++i;
   }
@@ -391,7 +391,7 @@ void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   }
 
   TemperatureMenuDataTransfer parser = menu.getParser();
-  vector<FilterDTO<string>> filters = parser.getFilters();
+  vector<Filter<string>> filters = parser.getFilters();
 
   if (filters[optionIndex].type == FilterType::location) {
     menu.changeState(new CountrySelectionMenu());
@@ -408,7 +408,7 @@ void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
 
   MenuModeManager::controlMode();
 
-  for (FilterDTO<string> &filter : filters) {
+  for (Filter<string> &filter : filters) {
     if (filter.type == FilterType::timeRange) {
       filter.value = value;
     }

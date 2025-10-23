@@ -23,9 +23,9 @@ void Canvas::resize() {
   this->grid = vector<vector<char>>(height, vector<char>(width, ' '));
 }
 
-vector<RenderPoint> IRenderable::render(const Canvas &canvas) const {
-  return vector<RenderPoint>{};
-}
+// vector<RenderPoint> IRenderable::render(const Canvas &canvas) const {
+//   return vector<RenderPoint>{};
+// }
 
 void Renderer::clearCanvas() {
   vector<vector<char>> &grid = this->canvas.getGrid();
@@ -72,15 +72,15 @@ vector<vector<char>>
 Renderer::modifyGrid(const vector<RenderPoint> &renderPoints) {
   vector<vector<char>> &grid = this->canvas.getGrid();
 
-  //auto *logger = Logger::getInstance(EnvType::PROD);
+  // auto *logger = Logger::getInstance(EnvType::PROD);
 
   for (unsigned int i = 0; i < renderPoints.size(); ++i) {
     const int &x = renderPoints[i].x;
     const int &y = renderPoints[i].y;
     const char &symbol = renderPoints[i].symbol;
 
-
-    if ((y >= 0 && (std::size_t)y < grid.size()) && (x >= 0 && (std::size_t)x < grid[y].size())) {
+    if ((y >= 0 && (std::size_t)y < grid.size()) &&
+        (x >= 0 && (std::size_t)x < grid[y].size())) {
       grid[y][x] = symbol;
     }
   }

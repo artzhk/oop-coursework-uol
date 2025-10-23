@@ -33,7 +33,7 @@ public:
 class Renderer {
 public:
   Renderer(Canvas _canvas);
-  void render(const vector<IRenderable*> &renderables);
+  void render(const vector<IRenderable *> &renderables);
   const Canvas &getCanvas() const { return canvas; }
   void clearCanvas();
 

@@ -3,7 +3,7 @@
 #include <vector>
 
 class Menu;
-template <typename T> class FilterDTO;
+template <typename T> class Filter;
 
 enum MenuMode { control, input };
 

@@ -29,7 +29,7 @@ class CandlestickDataExtractor {
 public:
   static vector<Candlestick>
   getCandlesticks(const vector<TemperaturePoint> &points,
-                  const vector<FilterDTO<string> > &filters,
+                  const vector<Filter<string>> &filters,
                   unsigned int hoursStep = 24);
 
   static vector<Candlestick>
@@ -38,7 +38,9 @@ public:
                   EULocation location = EULocation::de);
 
 private:
-  static vector<TemperaturePoint> filterPoints(const vector<TemperaturePoint> &points, const EULocation &location);
+  static vector<TemperaturePoint>
+  filterPoints(const vector<TemperaturePoint> &points,
+               const EULocation &location);
   static vector<Candlestick>
   createCandlesticks(const vector<TemperaturePoint> &filteredPoints,
                      DateInterval *dateInterval, u_int hoursStep);
