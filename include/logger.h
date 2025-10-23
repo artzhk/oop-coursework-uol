@@ -1,7 +1,7 @@
 #pragma once
+#include <chrono>
 #include <mutex>
 #include <string>
-#include <chrono>
 
 enum class EnvType { DEV, PROD };
 
@@ -23,4 +23,3 @@ private:
 
   EnvType env;
 };
-

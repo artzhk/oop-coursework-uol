@@ -21,8 +21,7 @@ public:
 // @param y u_int
 class GraphParameters {
 public:
-  GraphParameters(u_int x, u_int y)
-      : x(x), y(y) {};
+  GraphParameters(u_int x, u_int y) : x(x), y(y) {};
 
   u_int getX() { return x; }
   void setX(u_int x) { this->x = x; }
@@ -46,13 +45,14 @@ public:
   FilterType type;
 };
 
-/// TODO: Pls understand what it used for 
+/// TODO: Pls understand what it used for
 /// @param gParams - graph parameters
 /// @param f - vector of filters
 class TemperatureMenuDataTransfer {
 public:
-  TemperatureMenuDataTransfer(std::shared_ptr<GraphParameters> gParams,
-                              std::shared_ptr<std::vector<Filter<std::string>>> f)
+  TemperatureMenuDataTransfer(
+      std::shared_ptr<GraphParameters> gParams,
+      std::shared_ptr<std::vector<Filter<std::string>>> f)
       : graphParameters(gParams), filters(f) {}
 
   void setGraphParameters(const GraphParameters &_graphParameters);
