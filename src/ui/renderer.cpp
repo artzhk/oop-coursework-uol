@@ -1,5 +1,4 @@
 #include "../../include/renderer.h"
-#include "../../include/logger.h"
 #include <cmath>
 #include <cstddef>
 #include <iostream>
@@ -56,7 +55,7 @@ void Renderer::render(const vector<IRenderable *> &renderables) {
 
   const vector<vector<char>> &grid = modifyGrid(renderPoints);
 
-  for (std::size_t i = grid.size() - 1; i >= 0; --i) {
+  for (int i = grid.size() - 1; i >= 0; --i) {
     for (std::size_t j = 0; j < grid[i].size(); ++j) {
       cout << grid[i][j];
     }
