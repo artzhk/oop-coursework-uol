@@ -46,7 +46,9 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
 
   float tempStep = float(diff / yElementsAmount);
 
-  for (int i = 1; i * xSteps < width && (std::size_t)i < paginatedCandlesticks.size(); ++i) {
+  for (int i = 1;
+       i * xSteps < width && (std::size_t)i < paginatedCandlesticks.size();
+       ++i) {
     const Candlestick &candlestick = paginatedCandlesticks[i - 1];
 
     for (int j = 0; j < floor(candlestick.date.size() - 7); ++j) {

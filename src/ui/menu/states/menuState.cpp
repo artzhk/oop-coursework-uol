@@ -1,7 +1,7 @@
 #include "../../../../include/menuState.h"
+#include "../../../../include/menu.h"
 #include "../../../../include/temperaturePoint.h"
 #include "../../../../include/terminalTextStyles.h"
-#include "../../../../include/menu.h"
 
 #include <iostream>
 #include <string>
@@ -81,11 +81,11 @@ void MenuState::render(Menu &menu) {
   return;
 }
 
-//void MenuState::handleChoice(Menu &menu, const unsigned int &optionIndex) {
-//  cout << "Invalid choice! Please select a number between 1 and "
-//       << this->options.size() << "." << endl;
-//  return;
-//}
+// void MenuState::handleChoice(Menu &menu, const unsigned int &optionIndex) {
+//   cout << "Invalid choice! Please select a number between 1 and "
+//        << this->options.size() << "." << endl;
+//   return;
+// }
 
 MainMenu::MainMenu() {
   title = "Main Menu";
@@ -247,7 +247,7 @@ void CountrySelectionMenu::render(Menu &menu) {
   }
 
   for (unsigned int i = 0; i < options.size() - 1; i += 2) {
-	  std::size_t c = (std::size_t)menu.getChoice();
+    std::size_t c = (std::size_t)menu.getChoice();
     if (c == i + 1) {
       cout << i + 1 << ". " << options[i] << " | " << " > " << (i + 2) << ". "
            << options[i + 1] << " < " << endl;

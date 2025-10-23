@@ -143,36 +143,36 @@ Menu *Menu::getInstance(const TemperatureMenuDataTransfer &_parser,
   return Menu::instance;
 }
 
-//TemperatureMenuDataTransfer::TemperatureMenuDataTransfer(std::shared_ptr<GraphParameters> gParams,
-//                              std::vector<Filter<std::string>> *f) {
-//  if (gParams) {
-//    this->graphParameters = shared_ptr<GraphParameters>(gParams);
-//  } else {
-//    this->graphParameters =
-//        shared_ptr<GraphParameters>(new GraphParameters(10, 10));
-//  }
+// TemperatureMenuDataTransfer::TemperatureMenuDataTransfer(std::shared_ptr<GraphParameters>
+// gParams,
+//                               std::vector<Filter<std::string>> *f) {
+//   if (gParams) {
+//     this->graphParameters = shared_ptr<GraphParameters>(gParams);
+//   } else {
+//     this->graphParameters =
+//         shared_ptr<GraphParameters>(new GraphParameters(10, 10));
+//   }
 //
-//  if (f) {
-//    this->filters = shared_ptr<vector<Filter<string>>>(f);
-//  } else {
-//    this->filters =
-//        shared_ptr<vector<Filter<string>>>(new vector<Filter<string>>({
-//            Filter<string>("1980-01-01T00:00:00Z|2019-12-31T23:00:00Z",
-//                              FilterType::timeRange),
-//            Filter<string>(
-//                LocationEnumProcessor::locationToString(EULocation::de),
-//                FilterType::location),
-//        }));
-//  }
-//}
+//   if (f) {
+//     this->filters = shared_ptr<vector<Filter<string>>>(f);
+//   } else {
+//     this->filters =
+//         shared_ptr<vector<Filter<string>>>(new vector<Filter<string>>({
+//             Filter<string>("1980-01-01T00:00:00Z|2019-12-31T23:00:00Z",
+//                               FilterType::timeRange),
+//             Filter<string>(
+//                 LocationEnumProcessor::locationToString(EULocation::de),
+//                 FilterType::location),
+//         }));
+//   }
+// }
 
 void TemperatureMenuDataTransfer::setFilters(
     const vector<Filter<string>> &_filters) {
   *this->filters = _filters;
 }
 
-const vector<Filter<string>> &
-TemperatureMenuDataTransfer::getFilters() const {
+const vector<Filter<string>> &TemperatureMenuDataTransfer::getFilters() const {
   return *this->filters;
 }
 
@@ -181,7 +181,6 @@ void TemperatureMenuDataTransfer::setGraphParameters(
   *this->graphParameters = _graphParameters;
 }
 
-const GraphParameters &
-TemperatureMenuDataTransfer::getGraphParameters() const {
+const GraphParameters &TemperatureMenuDataTransfer::getGraphParameters() const {
   return *this->graphParameters;
 }
