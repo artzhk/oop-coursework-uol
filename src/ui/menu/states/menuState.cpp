@@ -384,7 +384,7 @@ void FilterMenu::handleDateInput(string &value) {
 }
 
 void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
-  if (optionIndex >= options.size() || optionIndex < 0) {
+  if (optionIndex >= options.size()) {
     cout << "Invalid choice! Please select a number between 1 and "
          << this->options.size() << "." << endl;
     return;
