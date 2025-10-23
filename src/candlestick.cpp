@@ -1,6 +1,6 @@
-#import "../include/candlestick.h"
-#import "../include/fileReader.h"
-#import "../include/logger.h"
+#include "../include/candlestick.h"
+#include "../include/fileReader.h"
+#include "../include/logger.h"
 #include <string>
 
 vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
