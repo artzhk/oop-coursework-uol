@@ -1,17 +1,19 @@
+#include "../include/fileReader.h"
 #include "../include/graph.h"
 #include "../include/menu.h"
-#include "../include/logger.h"
-#include "../include/fileReader.h"
-#include <sys/stat.h>
-#include <unistd.h>
+#include "../include/timing.h"
 #include <iostream>
 #include <string>
+#include <sys/stat.h>
+#include <unistd.h>
 
 int main() {
+  timing::elapsed_ms();
   const std::string name = "./datasets/weather_data.csv";
   if (!FileReader::exists(name)) {
-	  std::cout << "File does not exists" << std::endl;
-	  return -1;
+    std::cout << "File does not exists" << std::endl;
+    std::cout << timing::elapsed_ms() << std::endl;
+    return -1;
   }
 
   GraphParametersDTO graphParameters{10, 10};

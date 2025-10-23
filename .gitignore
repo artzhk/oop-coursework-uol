@@ -2,6 +2,8 @@ datasets/*
 build/*
 *.*-E
 
+*.swp
+
 *.mp4
 *.pdf
 
