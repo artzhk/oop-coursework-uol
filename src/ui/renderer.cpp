@@ -23,9 +23,9 @@ void Canvas::resize() {
   this->grid = vector<vector<char>>(height, vector<char>(width, ' '));
 }
 
-vector<RenderPoint> IRenderable::render(const Canvas &canvas) const {
-  return vector<RenderPoint>{};
-}
+//vector<RenderPoint> IRenderable::render(const Canvas &canvas) const {
+//  return vector<RenderPoint>{};
+//}
 
 void Renderer::clearCanvas() {
   vector<vector<char>> &grid = this->canvas.getGrid();

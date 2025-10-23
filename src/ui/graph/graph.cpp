@@ -1,6 +1,7 @@
 #include "../../../include/graph.h"
 #include "../../../include/logger.h"
 #include <cmath>
+#include <cstddef>
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -25,11 +26,10 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
   int width = canvas.getWidth();
   int height = canvas.getHeight();
 
-  u_int xElementsAmount = this->graphParameters->getXElements();
-  u_int yElementsAmount = this->graphParameters->getYElements();
+  u_int xElementsAmount = this->graphParameters->getX();
+  u_int yElementsAmount = this->graphParameters->getY();
 
   auto *logger = Logger::getInstance(EnvType::PROD);
-  u_int size = this->candlesticks.size();
 
   int ySteps = floor(height / yElementsAmount);
   int xSteps = floor(width / xElementsAmount);
@@ -46,7 +46,7 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
 
   float tempStep = float(diff / yElementsAmount);
 
-  for (int i = 1; i * xSteps < width && i < paginatedCandlesticks.size(); ++i) {
+  for (int i = 1; i * xSteps < width && (std::size_t)i < paginatedCandlesticks.size(); ++i) {
     const Candlestick &candlestick = paginatedCandlesticks[i - 1];
 
     for (int j = 0; j < floor(candlestick.date.size() - 7); ++j) {
@@ -56,8 +56,6 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
   }
 
   for (int i = 0; i * ySteps < height; ++i) {
-    const Candlestick &candlestick = paginatedCandlesticks[i];
-
     int exp = floor(log10f(tempStep));
     int multiplyFactor = 1;
 
@@ -77,7 +75,7 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
     }
   }
 
-  for (int i = 1; i < paginatedCandlesticks.size(); ++i) {
+  for (std::size_t i = 1; i < paginatedCandlesticks.size(); ++i) {
     const Candlestick &candlestick = paginatedCandlesticks[i - 1];
 
     int open = floor(abs((candlestick.open - min) * height) / diff);
@@ -122,11 +120,9 @@ vector<RenderPoint> Graph::renderAxes(const Canvas &canvas) const {
 
   int width = canvas.getWidth();
   int height = canvas.getHeight();
-  auto *logger = Logger::getInstance(EnvType::PROD);
-  u_int size = this->candlesticks.size();
 
-  int ySteps = floor(height / this->graphParameters->getYElements());
-  int xSteps = floor(width / this->graphParameters->getXElements());
+  int ySteps = floor(height / this->graphParameters->getY());
+  int xSteps = floor(width / this->graphParameters->getX());
 
   for (int i = Y_THRESHOLD; i < width; ++i) {
     if (i % xSteps == 0) {

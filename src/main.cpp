@@ -16,15 +16,17 @@ int main() {
     return -1;
   }
 
-  GraphParametersDTO graphParameters{10, 10};
+  shared_ptr<GraphParameters> graphParameters(new GraphParameters{10, 10});
 
-  std::vector<FilterDTO<string>> filters{
-      FilterDTO<string>("1980-01-01T00:00:00Z|2019-12-31T23:00:00Z",
-                        FilterType::timeRange),
-      FilterDTO<string>(LocationEnumProcessor::locationToString(EULocation::de),
-                        FilterType::location)};
+  shared_ptr<std::vector<Filter<string>>> filters(
+      new std::vector<Filter<string>>{
+          Filter<string>("1980-01-01T00:00:00Z|2019-12-31T23:00:00Z",
+                         FilterType::timeRange),
+          Filter<string>(
+              LocationEnumProcessor::locationToString(EULocation::de),
+              FilterType::location)});
 
-  TemperatureMenuDataTransfer parser{&graphParameters, &filters};
+  TemperatureMenuDataTransfer parser{graphParameters, filters};
 
   MenuOptions options{true, false};
 
@@ -37,7 +39,7 @@ int main() {
   std::vector<Candlestick> candlesticks{
       CandlestickDataExtractor::getCandlesticks(temperatures, 24 * 31)};
 
-  Graph graph{candlesticks, &graphParameters, &filters};
+  Graph graph{graphParameters, filters, candlesticks};
 
   const std::vector<IRenderable *> renderables{&graph};
 
@@ -45,7 +47,7 @@ int main() {
 
   while (true) {
     graph.setCandlesticks(CandlestickDataExtractor::getCandlesticks(
-        temperatures, filters, 24 * 31));
+        temperatures, *filters.get(), 24 * 31));
     renderer.render(renderables);
     menu->run();
     renderer.clearCanvas();

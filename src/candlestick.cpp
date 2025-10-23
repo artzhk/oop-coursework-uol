@@ -5,15 +5,15 @@
 
 vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
     const vector<TemperaturePoint> &points,
-    const vector<FilterDTO<string> > &filters, unsigned int hoursStep) {
+    const vector<Filter<string>> &filters, unsigned int hoursStep) {
   auto *logger = Logger::getInstance(EnvType::PROD);
 
   EULocation location = EULocation::uknown;
   DateInterval *dateInterval = nullptr;
 
-  for (const FilterDTO<string> &filter : filters) {
+  for (const Filter<string> &filter : filters) {
     if (filter.type == FilterType::location) {
-        logger->log("Filter value: " + filter.value);
+      logger->log("Filter value: " + filter.value);
       location = LocationEnumProcessor::stringToLocation(filter.value);
     }
 
@@ -40,7 +40,7 @@ vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
 vector<Candlestick> CandlestickDataExtractor::createCandlesticks(
     const vector<TemperaturePoint> &filteredPoints, DateInterval *dateInterval,
     u_int hoursStep) {
-  vector<Candlestick> candlesticks {};
+  vector<Candlestick> candlesticks{};
 
   for (unsigned int i = 0; i < filteredPoints.size(); i += hoursStep) {
     const TemperaturePoint &point = filteredPoints[i];
@@ -107,15 +107,12 @@ CandlestickDataExtractor::filterPoints(const vector<TemperaturePoint> &points,
     filteredPoints.emplace_back(point);
   }
 
-
   return filteredPoints;
 }
 
 vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
     const vector<TemperaturePoint> &points, unsigned int hoursStep,
     EULocation location) {
-
-  auto *logger = Logger::getInstance(EnvType::PROD);
 
   vector<TemperaturePoint> filteredPoints = filterPoints(points, location);
 
