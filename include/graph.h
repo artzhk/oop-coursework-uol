@@ -7,7 +7,7 @@
 /// @see IRenderable
 /// @param gParams std::shared_ptr<GraphParameters>
 /// @param f std::shared_ptr<vector<Filter<string>>>
-/// @param c const vector<Candlestick> & - candlestic const reference
+/// @param c const vector<Candlestick> & - candlestick const reference
 class Graph : public IRenderable {
 public:
   Graph(std::shared_ptr<GraphParameters> gParams,

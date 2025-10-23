@@ -16,7 +16,8 @@ public:
   bool filters;
 };
 
-// TODO: Options of Graph might be width and hight, idk why is it called x, y...
+// TODO: Options of Graph might be width and height, idk why is it called x,
+// y...
 // @param x u_int
 // @param y u_int
 class GraphParameters {

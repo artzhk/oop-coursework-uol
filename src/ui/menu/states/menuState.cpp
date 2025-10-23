@@ -295,7 +295,8 @@ void CountrySelectionMenu::printControlsHelp() {
 vector<string> CountrySelectionMenu::countries() {
   vector<string> countries{};
 
-  for (const pair<string, EULocation> locationPair : stringToLocationsMap) {
+  for (const std::pair<const std::string, EULocation> &locationPair :
+       stringToLocationsMap) {
     if (locationPair.second == EULocation::uknown) {
       continue;
     }
@@ -347,7 +348,7 @@ vector<string> FilterMenu::generateFilters() {
   vector<string> options{};
 
   unsigned int i = 1;
-  for (const pair<FilterType, string> filterPair : filtersMap) {
+  for (const pair<const FilterType, string> &filterPair : filtersMap) {
     options.emplace_back(to_string(i) + ". " + filterPair.second);
     ++i;
   }
