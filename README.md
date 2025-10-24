@@ -1,4 +1,9 @@
-# Terminal Weather Graph
+# Ascii data visualisation
+Started as a midterm assignment for university, I liked the idea to visualise different kind of data in terminal. 
+Generall purpose data visualisation app.
+
+CLI synapsis - WIP
+
 Reads CSV -> returns a candlestick graph based on read data. 
 ![pic](./assets/pic.png)
 
