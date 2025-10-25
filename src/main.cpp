@@ -1,18 +1,17 @@
 #include "../include/fileReader.h"
 #include "../include/graph.h"
+#include "../include/logger.h"
 #include "../include/menu.h"
-#include "../include/timing.h"
 #include <iostream>
 #include <string>
 #include <sys/stat.h>
 #include <unistd.h>
 
 int main() {
-  timing::elapsed_ms();
-  const std::string name = "./datasets/weather_data.csv";
+  auto logger = Logger::getInstance(EnvType::DEV);
+  const std::string name = "../assets/weather_data.csv";
   if (!FileReader::exists(name)) {
-    std::cout << "File does not exists" << std::endl;
-    std::cout << timing::elapsed_ms() << std::endl;
+    logger->log("File does not exists");
     return -1;
   }
 

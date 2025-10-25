@@ -2,6 +2,8 @@ datasets/*
 build/*
 *.*-E
 
+assets/weather_data.csv
+
 *.swp
 
 *.mp4

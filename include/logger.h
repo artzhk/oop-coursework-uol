@@ -5,8 +5,7 @@
 
 enum class EnvType { DEV, PROD };
 
-class Logger {
-public:
+struct Logger {
   Logger &operator=(const Logger &) = delete;
   Logger(Logger &other) = delete;
   Logger(const Logger &) = delete;

@@ -1,5 +1,6 @@
 #include "../../include/logger.h"
 #include <iostream>
+#include "../../include/timing.h"
 
 Logger *Logger::instance = nullptr;
 
@@ -14,6 +15,8 @@ void Logger::log(const std::string &message) {
   if (env == EnvType::PROD) {
     return;
   }
-  std::cout << "LOG: " << message << std::endl;
+
+  uint64_t ms = timing::elapsed_ms();
+  std::cout << "[" << ms << "]" << "[LOG]:" << message << std::endl;
   return;
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "candlestick.h"
 #include "menu.h"
 #include "renderer.h"
