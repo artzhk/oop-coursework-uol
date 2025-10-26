@@ -1,6 +1,7 @@
 #include "../include/temperaturePoint.h"
 #include "../include/fileReader.h"
 #include "../include/logger.h"
+
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
@@ -44,12 +45,9 @@ EULocation LocationEnumProcessor::stringToLocation(const std::string &country) {
   throw std::invalid_argument("Invalid country name");
 }
 
-TemperaturePoint::TemperaturePoint(EULocation _location, float _temperature,
-                                   string _date)
-    : location(_location), temperature(_temperature), date(_date) {}
-
 vector<TemperaturePoint>
 TemparatureDataExtractor::getTemperatures(const string &path) {
+  LOG_INFO("Getting temprature=%s", path.c_str());
   vector<TemperaturePoint> points{};
   vector<string> rows = FileReader::read_file(path);
 

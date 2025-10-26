@@ -2,12 +2,10 @@
 #include <fstream>
 #include <iostream>
 
-using namespace std;
-
-vector<string> FileReader::read_file(const string &path) {
-  ifstream csv_file{path};
-  vector<string> lines;
-  string line;
+std::vector<std::string> FileReader::read_file(const std::string &path) {
+  std::ifstream csv_file{path};
+  std::vector<std::string> lines;
+  std::string line;
 
   if (csv_file.is_open()) {
     while (true) {
@@ -22,12 +20,13 @@ vector<string> FileReader::read_file(const string &path) {
   return lines;
 }
 
-vector<string> FileReader::tokenise(const string &csv_line, char separator) {
-  vector<string> tokens{};
+std::vector<std::string> FileReader::tokenise(const std::string &csv_line,
+                                              char separator) {
+  std::vector<std::string> tokens{};
   signed int start, end;
   start = csv_line.find_last_not_of(separator, 0);
 
-  string token;
+  std::string token;
 
   do {
     end = csv_line.find_first_of(separator, start);
@@ -45,6 +44,6 @@ vector<string> FileReader::tokenise(const string &csv_line, char separator) {
 }
 
 bool FileReader::exists(const std::string &name) {
-  ifstream f(name.c_str());
+  std::ifstream f(name.c_str());
   return f.good();
 }

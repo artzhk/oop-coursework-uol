@@ -1,5 +1,6 @@
 datasets/*
 build/*
+assets/weather_data.csv
 *.*-E
 
 assets/weather_data.csv

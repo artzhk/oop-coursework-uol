@@ -8,10 +8,9 @@
 #include <unistd.h>
 
 int main() {
-  auto logger = Logger::getInstance(EnvType::DEV);
   const std::string name = "../assets/weather_data.csv";
   if (!FileReader::exists(name)) {
-    logger->log("File does not exists");
+    LOG_FAIL("File does not exists: %s", name.c_str());
     return -1;
   }
 

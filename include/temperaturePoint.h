@@ -1,5 +1,6 @@
 #pragma once
 
+#include "logger.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -40,15 +41,14 @@ enum EULocation {
 
 extern const std::unordered_map<string, EULocation> stringToLocationsMap;
 
-class LocationEnumProcessor {
-public:
+struct LocationEnumProcessor {
   static string locationToString(EULocation location);
   static EULocation stringToLocation(const std::string &country);
 };
 
-class TemperaturePoint {
-public:
-  TemperaturePoint(EULocation _location, float _temperature, string _date);
+struct TemperaturePoint {
+  TemperaturePoint(EULocation l, float temp, string date)
+      : location(l), temperature(temp), date(date) {};
 
   float getTemperature() const { return temperature; }
   string getDate() const { return date; }
@@ -60,8 +60,7 @@ private:
   string date;
 };
 
-class TemperaturePointsState {
-public:
+struct TemperaturePointsState {
   TemperaturePointsState(const vector<TemperaturePoint> &_points)
       : points(vector<TemperaturePoint>(_points)) {};
 
@@ -72,7 +71,6 @@ private:
   vector<TemperaturePoint> points;
 };
 
-class TemparatureDataExtractor {
-public:
+struct TemparatureDataExtractor {
   static vector<TemperaturePoint> getTemperatures(const string &path);
 };
