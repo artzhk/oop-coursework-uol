@@ -35,7 +35,16 @@ private:
   u_int y;
 };
 
-enum FilterType { timeRange, location };
+// TODO: filters belong to another file
+enum FilterType { TimeRange, Location };
+inline const char *toString(FilterType t) {
+  switch (t) {
+  case TimeRange:
+    return "Time Range";
+  case Location:
+    return "Location";
+  }
+}
 
 extern const std::unordered_map<FilterType, std::string> filtersMap;
 

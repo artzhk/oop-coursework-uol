@@ -110,7 +110,7 @@ void Menu::requestChoice() {
 }
 
 const unordered_map<FilterType, string> filtersMap = {
-    {FilterType::location, "Location"}, {FilterType::timeRange, "Time range"}};
+    {FilterType::Location, "Location"}, {FilterType::TimeRange, "Time range"}};
 
 void Menu::run() {
   this->state->render(*this);

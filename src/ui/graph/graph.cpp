@@ -29,8 +29,6 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
   u_int xElementsAmount = this->graphParameters->getX();
   u_int yElementsAmount = this->graphParameters->getY();
 
-  auto *logger = Logger::getInstance(EnvType::PROD);
-
   int ySteps = floor(height / yElementsAmount);
   int xSteps = floor(width / xElementsAmount);
 
@@ -41,8 +39,8 @@ vector<RenderPoint> Graph::renderCandlesticks(const Canvas &canvas) const {
   float max = CandlestickProcessor::getHighest(paginatedCandlesticks);
   float diff = max - min;
 
-  logger->log("Min: " + to_string(min));
-  logger->log("Max: " + to_string(max));
+  LOG_INFO("MIN: %s", to_string(min).c_str());
+  LOG_INFO("MAX: %s", to_string(max).c_str());
 
   float tempStep = float(diff / yElementsAmount);
 

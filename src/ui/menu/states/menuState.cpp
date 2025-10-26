@@ -277,7 +277,7 @@ void CountrySelectionMenu::handleChoice(Menu &menu,
   vector<Filter<string>> filters = parser.getFilters();
 
   for (Filter<string> &filter : filters) {
-    if (filter.type == FilterType::location) {
+    if (filter.type == FilterType::Location) {
       filter.value = options[optionIndex];
     }
   }
@@ -393,7 +393,7 @@ void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   TemperatureMenuDataTransfer parser = menu.getParser();
   vector<Filter<string>> filters = parser.getFilters();
 
-  if (filters[optionIndex].type == FilterType::location) {
+  if (filters[optionIndex].type == FilterType::Location) {
     menu.changeState(new CountrySelectionMenu());
     return;
   }
@@ -409,7 +409,7 @@ void FilterMenu::handleChoice(Menu &menu, const unsigned int &optionIndex) {
   MenuModeManager::controlMode();
 
   for (Filter<string> &filter : filters) {
-    if (filter.type == FilterType::timeRange) {
+    if (filter.type == FilterType::TimeRange) {
       filter.value = value;
     }
   }

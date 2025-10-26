@@ -19,10 +19,10 @@ int main() {
   shared_ptr<std::vector<Filter<string>>> filters(
       new std::vector<Filter<string>>{
           Filter<string>("1980-01-01T00:00:00Z|2019-12-31T23:00:00Z",
-                         FilterType::timeRange),
+                         FilterType::TimeRange),
           Filter<string>(
               LocationEnumProcessor::locationToString(EULocation::de),
-              FilterType::location)});
+              FilterType::Location)});
 
   TemperatureMenuDataTransfer parser{graphParameters, filters};
 

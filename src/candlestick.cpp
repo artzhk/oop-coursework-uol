@@ -6,18 +6,17 @@
 vector<Candlestick> CandlestickDataExtractor::getCandlesticks(
     const vector<TemperaturePoint> &points,
     const vector<Filter<string>> &filters, unsigned int hoursStep) {
-  auto *logger = Logger::getInstance(EnvType::PROD);
 
   EULocation location = EULocation::uknown;
   DateInterval *dateInterval = nullptr;
 
   for (const Filter<string> &filter : filters) {
-    if (filter.type == FilterType::location) {
-      logger->log("Filter value: " + filter.value);
+    if (filter.type == FilterType::Location) {
+      LOG_DBG("Filter %s: %s", toString(filter.type), filter.value.c_str());
       location = LocationEnumProcessor::stringToLocation(filter.value);
     }
 
-    if (filter.type == FilterType::timeRange) {
+    if (filter.type == FilterType::TimeRange) {
       vector<string> tokens = FileReader::tokenise(filter.value, '|');
       dateInterval = new DateInterval(tokens[0], tokens[1]);
     }
