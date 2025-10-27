@@ -1,6 +1,7 @@
 #pragma once
 #include "timing.h"
 #include <chrono>
+#include <cstdarg>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -30,7 +31,7 @@ inline void vprint(level lvl, const char *tag, const char *file, int line,
   if (lvl > LOG_LEVEL)
     return;
   std::lock_guard<std::mutex> lk(mtx());
-  std::fprintf(stdout, "%llu [%s] [t=%zu] %s:%d %s: ", timing::elapsedMs(), tag,
+  std::fprintf(stdout, "%lu [%s] [t=%zu] %s:%d %s: ", timing::elapsedMs(), tag,
                tid(), file, line, func);
   std::vfprintf(stdout, fmt, ap);
   std::fputc('\n', stdout);

@@ -44,6 +44,8 @@ inline const char *toString(FilterType t) {
   case Location:
     return "Location";
   }
+
+  return "Uknown";
 }
 
 extern const std::unordered_map<FilterType, std::string> filtersMap;
