@@ -4,8 +4,8 @@ CXXFLAGS = -std=c++11 -Wall -Wextra -O2 -g
 BUILD_DIR = build
 SRC_DIR = src
 
-SRCS := $(shell find src -type f -name '*.cpp')
-OBJS := $(subst $(SRC_DIR),$(BUILD_DIR),$(addsuffix .o, $(basename $(SRC))))
+SRCS = $(shell find src -type f -name '*.cpp')
+OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
 
 TARGET = build/weatherAnalyzer
 
@@ -13,14 +13,12 @@ build: $(TARGET)
 
 $(TARGET): $(OBJS) 
 	@mkdir -p $(BUILD_DIR)
-	@echo $(OBJS)
-	@echo $(basename $(SRCS))
-	$(CXXFLAGS) -o $@ $^
+	@echo $(BUILD_DIR)/$(addprefix $(BUILD_DIR)/,$(notdir $^))
+	$(CXX) $(CXXFLAGS) -o $@ $(addprefix $(BUILD_DIR)/,$(notdir $^))
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp 
 	@mkdir -p $(BUILD_DIR)
-	echo "$^,$@"
-	$(CXXFLAGS) -c $^ -o $@
+	$(CXX) $(CXXFLAGS) -c $^ -o $(BUILD_DIR)/$(notdir $@)
 
 clean:
 	rm -rf $(BUILD_DIR)
