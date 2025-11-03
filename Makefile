@@ -1,26 +1,27 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -O2 -g
 
-BUILD_DIR = build
-SRC_DIR = src
+BUILD = build
+SRC = src
+BIN = bin
 
 SRCS = $(shell find src -type f -name '*.cpp')
-OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
+OBJS = $(patsubst $(SRC)/%.cpp,$(BUILD)/%.o,$(SRCS))
 
-TARGET = build/weatherAnalyzer
+TARGET = $(BIN)/weatherAnalyzer
 
 build: $(TARGET)
 
 $(TARGET): $(OBJS) 
-	@mkdir -p $(BUILD_DIR)
-	@echo $(BUILD_DIR)/$(addprefix $(BUILD_DIR)/,$(notdir $^))
-	$(CXX) $(CXXFLAGS) -o $@ $(addprefix $(BUILD_DIR)/,$(notdir $^))
+	@mkdir -p $(BIN)
+	@echo $(BUILD)/$(addprefix $(BUILD)/,$(notdir $^))
+	$(CXX) $(CXXFLAGS) -o $@ $(addprefix $(BUILD)/,$(notdir $^))
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp 
-	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -c $^ -o $(BUILD_DIR)/$(notdir $@)
+$(BUILD)/%.o: $(SRC)/%.cpp 
+	@mkdir -p $(BUILD)
+	$(CXX) $(CXXFLAGS) -c $^ -o $(BUILD)/$(notdir $@)
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD) $(BIN)
 
 .PHONY: all clean
