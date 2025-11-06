@@ -18,8 +18,8 @@ public:
 
 // TODO: Options of Graph might be width and height, idk why is it called x,
 // y...
-// @param x u_int
-// @param y u_int
+/// @param x u_int
+/// @param y u_int
 class GraphParameters {
 public:
   GraphParameters(u_int x, u_int y) : x(x), y(y) {};
@@ -35,7 +35,6 @@ private:
   u_int y;
 };
 
-// TODO: filters belong to another file
 enum FilterType { TimeRange, Location };
 inline const char *toString(FilterType t) {
   switch (t) {
@@ -78,6 +77,10 @@ private:
   std::shared_ptr<std::vector<Filter<std::string>>> filters;
 };
 
+/// Options responsible for menu rendering 
+/// REFACTOR_ME: Ideally must be something like git add -i(interactive git mod)
+/// @param gParams - graph parameters
+/// @param f - vector of filters
 class MenuOptions {
 public:
   MenuOptions(bool _showControls, bool _showFilters)

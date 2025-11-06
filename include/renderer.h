@@ -4,16 +4,19 @@
 
 using namespace std;
 
-class RenderPoint {
-public:
+struct RenderPoint {
   int x;
   int y;
   char symbol;
-  RenderPoint(int _x, int _y, char _symbol) : x(_x), y(_y), symbol(_symbol) {}
+  RenderPoint(int x, int y, char s) : x{x}, y{y}, symbol{s} {}
 };
 
-class Canvas {
-public:
+/// Main instance of a canvas, must be modified and 
+/// @method getGrid() vector<vector<char>>&
+/// @method resize() void - dynamically change canvas width and height
+/// @method getWidth() int
+/// @method getHeight() int 
+struct Canvas {
   Canvas();
   vector<vector<char>> &getGrid() { return this->grid; }
   int getWidth() const { return width; }
@@ -26,14 +29,12 @@ private:
   vector<vector<char>> grid;
 };
 
-class IRenderable {
-public:
+struct IRenderable {
   virtual vector<RenderPoint> render(const Canvas &canvas) const = 0;
   virtual ~IRenderable() = default;
 };
 
-class Renderer {
-public:
+struct Renderer {
   Renderer(Canvas _canvas);
   void render(const vector<IRenderable *> &renderables);
   const Canvas &getCanvas() const { return canvas; }
