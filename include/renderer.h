@@ -34,6 +34,7 @@ struct IRenderable {
   virtual ~IRenderable() = default;
 };
 
+// TODO: dude must have a destructor to clear IRenderable 
 /// Renders clears and modifiese the grid 
 /// @method render(const std::std::vector<const IRenderable&>) void - renders renderable object on 
 ///  the current canvas
