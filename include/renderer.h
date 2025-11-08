@@ -2,8 +2,6 @@
 
 #include <vector>
 
-using namespace std;
-
 struct RenderPoint {
   int x;
   int y;
@@ -12,13 +10,13 @@ struct RenderPoint {
 };
 
 /// Main instance of a canvas, must be modified and 
-/// @method getGrid() vector<vector<char>>&
+/// @method getGrid() std::vector<std::vector<char>>&
 /// @method resize() void - dynamically change canvas width and height
 /// @method getWidth() int
 /// @method getHeight() int 
 struct Canvas {
   Canvas();
-  vector<vector<char>> &getGrid() { return this->grid; }
+  std::vector<std::vector<char>> &getGrid() { return this->grid; }
   int getWidth() const { return width; }
   int getHeight() const { return height; }
   void resize();
@@ -26,22 +24,29 @@ struct Canvas {
 private:
   int width;
   int height;
-  vector<vector<char>> grid;
+  std::vector<std::vector<char>> grid;
 };
 
+/// Main renderable abstraction to inherit by every object 
+/// that must be renderable
 struct IRenderable {
-  virtual vector<RenderPoint> render(const Canvas &canvas) const = 0;
+  virtual std::vector<RenderPoint> render(const Canvas &canvas) const = 0;
   virtual ~IRenderable() = default;
 };
 
+/// Renders clears and modifiese the grid 
+/// @method render(const std::std::vector<const IRenderable&>) void - renders renderable object on 
+///  the current canvas
+/// @method getCanvas() const Canvas & - returns canvas is operated on
+/// @method cleanCanvas() void - clears current canvas
 struct Renderer {
   Renderer(Canvas _canvas);
-  void render(const vector<IRenderable *> &renderables);
+  void render(const std::vector<IRenderable *> &renderables);
   const Canvas &getCanvas() const { return canvas; }
   void clearCanvas();
 
 private:
-  vector<IRenderable> renderables;
+  std::vector<IRenderable> renderables;
   Canvas canvas;
-  vector<vector<char>> modifyGrid(const vector<RenderPoint> &renderPoints);
+  std::vector<std::vector<char>> modifyGrid(const std::vector<RenderPoint> &renderPoints);
 };
