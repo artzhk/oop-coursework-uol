@@ -45,6 +45,7 @@ struct Renderer {
   void render(const std::vector<IRenderable *> &renderables);
   const Canvas &getCanvas() const { return canvas; }
   void clearCanvas();
+  ~Renderer();
 
 private:
   std::vector<IRenderable> renderables;

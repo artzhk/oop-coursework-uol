@@ -47,8 +47,8 @@ void Renderer::render(const std::vector<IRenderable *> &renderables) {
       continue;
     }
 
+    this->renderables.push_back(*it);
     std::vector<RenderPoint> addPoints = it->render(canvas);
-
     renderPoints.insert(renderPoints.end(), addPoints.begin(), addPoints.end());
   }
 
