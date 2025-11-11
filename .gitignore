@@ -1,6 +1,9 @@
 datasets/*
 build/*
 bin/*
+
+.cache/*
+
 assets/weather_data.csv
 *.*-E
 
