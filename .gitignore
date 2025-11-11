@@ -7,6 +7,8 @@ bin/*
 assets/weather_data.csv
 *.*-E
 
+compile_commands.json
+
 assets/weather_data.csv
 
 Session.vim
