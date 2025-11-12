@@ -77,7 +77,7 @@ private:
   std::shared_ptr<std::vector<Filter<std::string>>> filters;
 };
 
-/// Options responsible for menu rendering 
+/// Options responsible for menu rendering
 /// REFACTOR_ME: Ideally must be something like git add -i(interactive git mod)
 /// @param gParams - graph parameters
 /// @param f - vector of filters

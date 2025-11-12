@@ -1,7 +1,10 @@
 #include "../../include/renderer.h"
+#include "../../include/logger.h"
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <iostream>
+#include <string>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -18,14 +21,12 @@ void Canvas::resize() {
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   this->width = w.ws_col;
   this->height = floor(w.ws_row);
-  this->grid = std::vector<std::vector<char>>(height, std::vector<char>(width, ' '));
+  this->grid =
+      std::vector<std::vector<char>>(height, std::vector<char>(width, ' '));
 }
 
-// std::vector<RenderPoint> IRenderable::render(const Canvas &canvas) const {
-//   return std::vector<RenderPoint>{};
-// }
-
 void Renderer::clearCanvas() {
+  LOG_INFO("Clearing canvas");
   std::vector<std::vector<char>> &grid = this->canvas.getGrid();
 
   for (std::size_t i = 0; i < grid.size(); ++i) {
@@ -38,16 +39,16 @@ void Renderer::clearCanvas() {
 }
 
 void Renderer::render(const std::vector<IRenderable *> &renderables) {
-
+  LOG_INFO("Rendering\namount of renderables %s",
+           std::to_string(renderables.size()).c_str());
   std::vector<RenderPoint> renderPoints{};
 
   for (unsigned long i = 0; i < renderables.size(); ++i) {
-    auto it = renderables[i];
+    IRenderable *it = renderables[i];
     if (it == nullptr) {
       continue;
     }
 
-    this->renderables.push_back(*it);
     std::vector<RenderPoint> addPoints = it->render(canvas);
     renderPoints.insert(renderPoints.end(), addPoints.begin(), addPoints.end());
   }
@@ -68,9 +69,8 @@ Renderer::Renderer(Canvas _canvas) { canvas = _canvas; }
 
 std::vector<std::vector<char>>
 Renderer::modifyGrid(const std::vector<RenderPoint> &renderPoints) {
+  LOG_INFO("Modifying Grid");
   std::vector<std::vector<char>> &grid = this->canvas.getGrid();
-
-  // auto *logger = Logger::getInstance(EnvType::PROD);
 
   for (unsigned int i = 0; i < renderPoints.size(); ++i) {
     const int &x = renderPoints[i].x;
